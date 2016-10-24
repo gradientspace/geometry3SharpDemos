@@ -17,12 +17,12 @@ namespace frame3Test
         {
 			SimpleMeshBuilder builder = new SimpleMeshBuilder();
 			var readResult = StandardMeshReader.ReadFile("c:\\scratch\\temp.obj", new ReadOptions(), builder);
-			if (readResult.Item1 != ReadResult.Ok)
+			if (readResult.result != ReadResult.Ok)
 				throw new Exception("fuck");
 
 			var writeResult = StandardMeshWriter.WriteFile("c:\\scratch\\temp_new.obj",
 				builder.Meshes.Cast<IMesh>().ToList(), new WriteOptions());
-			if (writeResult.Item1 != WriteResult.Ok)
+			if (writeResult.result != WriteResult.Ok)
 				throw new Exception("fuck");
         }
     }
