@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "geometry3Sharp", "geometry3Sharp\geometry3Sharp.csproj", "{0C518DDA-28FE-44CA-9AB0-F9773974F13A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "geometry3Test", "geometry3Test\geometry3Test.csproj", "{19B31E73-1328-4A5D-9922-32DFACCB84CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "geometry3Sharp", "geometry3Sharp\geometry3Sharp.csproj", "{0C518DDA-28FE-44CA-9AB0-F9773974F13A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,18 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|x64.Build.0 = Debug|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|x86.Build.0 = Debug|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x64.ActiveCfg = Release|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x64.Build.0 = Release|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x86.ActiveCfg = Release|Any CPU
-		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x86.Build.0 = Release|Any CPU
 		{19B31E73-1328-4A5D-9922-32DFACCB84CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19B31E73-1328-4A5D-9922-32DFACCB84CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19B31E73-1328-4A5D-9922-32DFACCB84CD}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -41,6 +29,18 @@ Global
 		{19B31E73-1328-4A5D-9922-32DFACCB84CD}.Release|x64.Build.0 = Release|Any CPU
 		{19B31E73-1328-4A5D-9922-32DFACCB84CD}.Release|x86.ActiveCfg = Release|Any CPU
 		{19B31E73-1328-4A5D-9922-32DFACCB84CD}.Release|x86.Build.0 = Release|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|x64.Build.0 = Debug|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Debug|x86.Build.0 = Debug|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x64.ActiveCfg = Release|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x64.Build.0 = Release|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x86.ActiveCfg = Release|Any CPU
+		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

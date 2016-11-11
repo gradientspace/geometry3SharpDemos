@@ -1,3 +1,5 @@
 geometry3Test/bin
 geometry3Test/obj
 geometry3SharpDemos.userprefs
+*.suo
+geometry3Test/geometry3Test.csproj.user
