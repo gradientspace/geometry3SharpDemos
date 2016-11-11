@@ -11,18 +11,32 @@ namespace geometry3Test
     {
         public static void test_simple_obj()
         {
-            SimpleMeshBuilder builder = new SimpleMeshBuilder();
+            string cwd = System.IO.Directory.GetCurrentDirectory();
+
+            System.Console.WriteLine("MeshIOTests : test_simple_obj() starting");
+
+            //SimpleMeshBuilder builder = new SimpleMeshBuilder();
+            DMesh3Builder builder = new DMesh3Builder();
             StandardMeshReader reader = new StandardMeshReader();
             reader.MeshBuilder = builder;
-            var readResult = StandardMeshReader.ReadFile("c:\\scratch\\temp.obj", new ReadOptions());
+            var readResult = reader.Read(Program.TEST_FILES_PATH + "socket_with_groups.obj", new ReadOptions());
 
-            if (readResult.result != ReadResult.Ok)
-                throw new Exception("fuck");
+            System.Console.WriteLine("read complete");
 
-            var writeResult = StandardMeshWriter.WriteFile("c:\\scratch\\temp_new.obj",
+            if (readResult.result != ReadResult.Ok) {
+                System.Console.WriteLine("read failed : " + readResult.info);
+                throw new Exception("failed");
+            }
+
+            var writeResult = StandardMeshWriter.WriteFile(Program.TEST_OUTPUT_PATH + "temp_write.obj",
                 builder.Meshes.Cast<IMesh>().ToList(), new WriteOptions());
-            if (writeResult.result != WriteResult.Ok)
+
+            System.Console.WriteLine("write complete");
+
+            if (writeResult.result != WriteResult.Ok) {
+                System.Console.WriteLine("write failed : " + writeResult.info);
                 throw new Exception("fuck");
+            }
         }
 
 
