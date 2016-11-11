@@ -18,8 +18,7 @@ namespace geometry3Test
             cylgen.Generate();
             cylgen.MakeMesh(tmp);
 
-            foreach (int vid in tmp.VertexIndices())
-                System.Console.WriteLine(tmp.GetVertex(vid).ToString());
+            tmp.CheckValidity();
 
             System.Console.WriteLine("cylinder ok");
 

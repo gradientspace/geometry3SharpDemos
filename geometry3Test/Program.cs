@@ -22,9 +22,9 @@ namespace geometry3Test
 
             //test_VectorTypes.test_rcvector();
 
-            //test_DMesh3.basic_tests();
+            test_DMesh3.basic_tests();
 
-            test_MeshIO.test_simple_obj();
+            //test_MeshIO.test_simple_obj();
 
             System.Console.ReadLine();
         }
