@@ -24,6 +24,11 @@ namespace geometry3Test
 
             test_DMesh3.basic_tests();
 
+
+			int split_rounds = 1000;
+			test_DMesh3.split_tests(true, split_rounds);
+			test_DMesh3.split_tests(false, split_rounds);
+
             //test_MeshIO.test_simple_obj();
 
             System.Console.ReadLine();
