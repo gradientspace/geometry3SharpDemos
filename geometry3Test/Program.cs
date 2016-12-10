@@ -25,9 +25,13 @@ namespace geometry3Test
             test_DMesh3.basic_tests();
 
 
-			int split_rounds = 1000;
+			int split_rounds = 100;
 			test_DMesh3.split_tests(true, split_rounds);
 			test_DMesh3.split_tests(false, split_rounds);
+
+			int flip_rounds = 100;
+			test_DMesh3.flip_tests(true, flip_rounds);
+			test_DMesh3.flip_tests(false, flip_rounds);
 
             //test_MeshIO.test_simple_obj();
 
