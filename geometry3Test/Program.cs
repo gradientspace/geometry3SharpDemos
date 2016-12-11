@@ -33,6 +33,14 @@ namespace geometry3Test
 			test_DMesh3.flip_tests(true, flip_rounds);
 			test_DMesh3.flip_tests(false, flip_rounds);
 
+			int collapse_rounds = 1000;
+			test_DMesh3.collapse_tests(true, collapse_rounds);
+			test_DMesh3.collapse_tests(false, collapse_rounds);
+
+			test_DMesh3.collapse_test_convergence_cyl_noshared();
+			test_DMesh3.collapse_test_closed_mesh();
+			test_DMesh3.collapse_test_convergence_opencyl();
+
             //test_MeshIO.test_simple_obj();
 
             System.Console.ReadLine();
