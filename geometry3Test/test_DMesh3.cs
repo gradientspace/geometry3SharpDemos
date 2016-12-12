@@ -8,7 +8,7 @@ using g3;
 
 namespace geometry3Test
 {
-    public class test_DMesh3
+    public static class test_DMesh3
     {
         public static void basic_tests()
         {
@@ -29,10 +29,7 @@ namespace geometry3Test
 		public static void split_tests(bool bTestBoundary, int N = 100) {
 			System.Console.WriteLine("DMesh3:split_tests() starting");
 
-			DMesh3 mesh = new DMesh3();
-			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() { NoSharedVertices = bTestBoundary };
-			cylgen.Generate();
-			cylgen.MakeMesh(mesh);
+			DMesh3 mesh = TestUtil.MakeCappedCylinder(bTestBoundary);
 			mesh.CheckValidity();
 
 			Random r = new Random(31377);
@@ -54,10 +51,7 @@ namespace geometry3Test
 		public static void flip_tests(bool bTestBoundary, int N = 100) {
 			System.Console.WriteLine("DMesh3:flip_tests() starting");
 
-			DMesh3 mesh = new DMesh3();
-			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() { NoSharedVertices = bTestBoundary };
-			cylgen.Generate();
-			cylgen.MakeMesh(mesh);
+			DMesh3 mesh = TestUtil.MakeCappedCylinder(bTestBoundary);
 			mesh.CheckValidity();
 
 			Random r = new Random(31377);
@@ -85,18 +79,14 @@ namespace geometry3Test
 
 			bool write_debug_meshes = false;
 
-			DMesh3 mesh = new DMesh3();
-			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() { NoSharedVertices = bTestBoundary };
-			//OpenCylinderGenerator cylgen = new OpenCylinderGenerator() { NoSharedVertices = true };
-			cylgen.Generate();
-			cylgen.MakeMesh(mesh);
+			DMesh3 mesh = TestUtil.MakeCappedCylinder(bTestBoundary);
 			mesh.CheckValidity();
 
 			System.Console.WriteLine( string.Format("DMesh3:collapse_tests() starting - test bdry {2}, verts {0} tris {1}", 
 			                                        mesh.VertexCount, mesh.TriangleCount, bTestBoundary) );
 
 			if(write_debug_meshes)
-				TestUtil.write_mesh(mesh, string.Format("before_collapse_{0}.obj", ((bTestBoundary)?"boundary":"noboundary")));
+				TestUtil.WriteDebugMesh(mesh, string.Format("before_collapse_{0}.obj", ((bTestBoundary)?"boundary":"noboundary")));
 
 
 			Random r = new Random(31377);
@@ -128,7 +118,7 @@ namespace geometry3Test
 			                                        mesh.VertexCount, mesh.TriangleCount) );
 
 			if(write_debug_meshes)
-				TestUtil.write_mesh(mesh, string.Format("after_collapse_{0}.obj", ((bTestBoundary)?"boundary":"noboundary")));
+				TestUtil.WriteDebugMesh(mesh, string.Format("after_collapse_{0}.obj", ((bTestBoundary)?"boundary":"noboundary")));
 		}
 
 

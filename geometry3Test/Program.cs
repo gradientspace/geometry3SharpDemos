@@ -21,8 +21,20 @@ namespace geometry3Test
         {
 
             //test_VectorTypes.test_rcvector();
+			//test_MeshIO.test_simple_obj();
 
-            test_DMesh3.basic_tests();
+			//test_dmesh();
+
+			test_Remesher.WriteDebugMeshes = true;
+			test_Remesher.basic_closed_remesh_test();
+
+
+            System.Console.ReadLine();
+        }
+
+
+		static void test_dmesh() {
+			test_DMesh3.basic_tests();
 
 
 			int split_rounds = 100;
@@ -40,10 +52,7 @@ namespace geometry3Test
 			test_DMesh3.collapse_test_convergence_cyl_noshared();
 			test_DMesh3.collapse_test_closed_mesh();
 			test_DMesh3.collapse_test_convergence_opencyl();
+		}
 
-            //test_MeshIO.test_simple_obj();
-
-            System.Console.ReadLine();
-        }
     }
 }

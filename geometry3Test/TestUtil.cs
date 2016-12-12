@@ -9,7 +9,7 @@ namespace geometry3Test
 	{
 		public const string WRITE_PATH = "/Users/rms/scratch/";
 
-		public static void write_mesh(IMesh mesh, string sfilename) 
+		public static void WriteDebugMesh(IMesh mesh, string sfilename) 
 		{
 			OBJWriter writer = new OBJWriter();
 			var s = new System.IO.StreamWriter(WRITE_PATH + sfilename, false);
@@ -24,6 +24,7 @@ namespace geometry3Test
 			OpenCylinderGenerator cylgen = new OpenCylinderGenerator() { NoSharedVertices = bNoSharedVertices };
 			cylgen.Generate();
 			cylgen.MakeMesh(mesh);
+			mesh.ReverseOrientation();
 			return mesh;
 		}
 
@@ -33,6 +34,7 @@ namespace geometry3Test
 			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() { NoSharedVertices = bNoSharedVertices };
 			cylgen.Generate();
 			cylgen.MakeMesh(mesh);
+			mesh.ReverseOrientation();
 			return mesh;
 		}
 	}
