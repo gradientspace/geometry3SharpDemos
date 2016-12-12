@@ -10,17 +10,6 @@ namespace geometry3Test
 {
     public class test_DMesh3
     {
-		const string WRITE_PATH = "/Users/rms/scratch/";
-
-		static void write_mesh(IMesh mesh, string sfilename) {
-			OBJWriter writer = new OBJWriter();
-			var s = new System.IO.StreamWriter(WRITE_PATH + sfilename, false);
-			writer.Write(s, new List<IMesh> {mesh}, new WriteOptions() );
-			s.Close();
-		}
-
-
-
         public static void basic_tests()
         {
             System.Console.WriteLine("DMesh3:basic_tests() starting");
@@ -107,7 +96,7 @@ namespace geometry3Test
 			                                        mesh.VertexCount, mesh.TriangleCount, bTestBoundary) );
 
 			if(write_debug_meshes)
-				write_mesh(mesh, string.Format("before_collapse_{0}.obj", ((bTestBoundary)?"boundary":"noboundary")));
+				TestUtil.write_mesh(mesh, string.Format("before_collapse_{0}.obj", ((bTestBoundary)?"boundary":"noboundary")));
 
 
 			Random r = new Random(31377);
@@ -139,7 +128,7 @@ namespace geometry3Test
 			                                        mesh.VertexCount, mesh.TriangleCount) );
 
 			if(write_debug_meshes)
-				write_mesh(mesh, string.Format("after_collapse_{0}.obj", ((bTestBoundary)?"boundary":"noboundary")));
+				TestUtil.write_mesh(mesh, string.Format("after_collapse_{0}.obj", ((bTestBoundary)?"boundary":"noboundary")));
 		}
 
 
@@ -171,10 +160,7 @@ namespace geometry3Test
 
 		// cyl with no shared verts should collapse down to two triangles
 		public static void collapse_test_convergence_cyl_noshared() {
-			DMesh3 mesh = new DMesh3();
-			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() { NoSharedVertices = true };
-			cylgen.Generate();
-			cylgen.MakeMesh(mesh);
+			DMesh3 mesh = TestUtil.MakeCappedCylinder(true);
 			mesh.CheckValidity();
 			collapse_to_convergence(mesh);
 			Util.gDevAssert( mesh.TriangleCount == 3 );
@@ -185,11 +171,9 @@ namespace geometry3Test
 
 		// open cylinder (ie a tube) should collapse down to having two boundary loops with 3 verts/edges each
 		public static void collapse_test_convergence_opencyl() {
-			DMesh3 mesh = new DMesh3();
-			OpenCylinderGenerator cylgen = new OpenCylinderGenerator() { NoSharedVertices = false };
-			cylgen.Generate();
-			cylgen.MakeMesh(mesh);
+			DMesh3 mesh = TestUtil.MakeOpenCylinder(false);
 			mesh.CheckValidity();
+
 			collapse_to_convergence(mesh);
 			int bdry_v = 0, bdry_t = 0, bdry_e = 0;
 			foreach ( int eid in mesh.EdgeIndices() ) {
@@ -211,10 +195,7 @@ namespace geometry3Test
 
 		// closed mesh should collapse to a tetrahedron
 		public static void collapse_test_closed_mesh() {
-			DMesh3 mesh = new DMesh3();
-			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() { NoSharedVertices = false };
-			cylgen.Generate();
-			cylgen.MakeMesh(mesh);
+			DMesh3 mesh = TestUtil.MakeCappedCylinder(false);
 			mesh.CheckValidity();
 			collapse_to_convergence(mesh);
 			Util.gDevAssert( mesh.TriangleCount == 4 );
