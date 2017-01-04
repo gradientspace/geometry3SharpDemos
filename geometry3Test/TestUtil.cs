@@ -7,13 +7,22 @@ namespace geometry3Test
 {
 	public static class TestUtil 
 	{
-		public const string WRITE_PATH = "/Users/rms/scratch/";
+		public static string WRITE_PATH {
+            get {
+                if (Util.IsRunningOnMono())
+                    return "/Users/rms/scratch/";
+                else
+                    return "c:\\scratch\\";
+            }
+        }
 
-		public static void WriteDebugMesh(IMesh mesh, string sfilename) 
-		{
-			OBJWriter writer = new OBJWriter();
-			var s = new System.IO.StreamWriter(WRITE_PATH + sfilename, false);
-			writer.Write(s, new List<IMesh> {mesh}, new WriteOptions() );
+
+
+        public static void WriteDebugMesh(IMesh mesh, string sfilename)
+        {
+            OBJWriter writer = new OBJWriter();
+            var s = new System.IO.StreamWriter(WRITE_PATH + sfilename, false);
+            writer.Write(s, new List<IMesh> { mesh }, new WriteOptions() { bWriteGroups = true } );
 			s.Close();
 		}
 
@@ -30,7 +39,7 @@ namespace geometry3Test
 
 		public static DMesh3 MakeCappedCylinder(bool bNoSharedVertices) 
 		{ 
-			DMesh3 mesh = new DMesh3();
+			DMesh3 mesh = new DMesh3(true, false, false, true);
 			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() { NoSharedVertices = bNoSharedVertices };
 			cylgen.Generate();
 			cylgen.MakeMesh(mesh);
