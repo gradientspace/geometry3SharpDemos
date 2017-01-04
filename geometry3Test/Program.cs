@@ -22,11 +22,14 @@ namespace geometry3Test
 
             //test_VectorTypes.test_rcvector();
 			//test_MeshIO.test_simple_obj();
+			//test_Math.test_VectorTanCot();
+
 
 			//test_dmesh();
 
 			test_Remesher.WriteDebugMeshes = true;
-			test_Remesher.basic_closed_remesh_test();
+			//test_Remesher.test_basic_closed_remesh();
+			test_Remesher.test_remesh_smoothing();
 
 
             System.Console.ReadLine();

@@ -93,6 +93,7 @@
     </Compile>
     <Compile Include="test_Remesher.cs" />
     <Compile Include="TestUtil.cs" />
+    <Compile Include="test_Math.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
