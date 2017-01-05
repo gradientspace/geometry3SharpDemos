@@ -8,7 +8,7 @@ namespace geometry3Test
 		public static bool WriteDebugMeshes = false;
 
 
-		static DMesh3 make_good_cylinder(float fResScale = 1.0f) {
+		public static DMesh3 make_good_cylinder(float fResScale = 1.0f) {
 			DMesh3 mesh = TestUtil.MakeCappedCylinder(false);
 			MeshUtil.ScaleMesh(mesh, Frame3f.Identity, new Vector3f(1,2,1));
 			mesh.CheckValidity();
@@ -127,7 +127,7 @@ namespace geometry3Test
                 double fAngle = MeshUtil.OpeningAngleD(mesh, eid);
                 if (fAngle > 30.0f) {
                     cons.SetOrUpdateEdgeConstraint(eid, new EdgeConstraint(useFlags));
-                    Vector2i ev = mesh.GetEdgeV(eid);
+                    Index2i ev = mesh.GetEdgeV(eid);
                     cons.SetOrUpdateVertexConstraint(ev[0], new VertexConstraint(true));
                     cons.SetOrUpdateVertexConstraint(ev[1], new VertexConstraint(true));
                 }

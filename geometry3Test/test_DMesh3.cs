@@ -97,7 +97,7 @@ namespace geometry3Test
 				//bool bBoundary = mesh.edge_is_boundary(eid);
 				//if (bTestBoundary && bBoundary == false)
 				//	 continue;
-				Vector2i ev = mesh.GetEdgeV(eid);
+				Index2i ev = mesh.GetEdgeV(eid);
 
 				DMesh3.EdgeCollapseInfo collapseInfo; 
 				MeshResult result = mesh.CollapseEdge(ev[0], ev[1], out collapseInfo);
@@ -132,7 +132,7 @@ namespace geometry3Test
 				for ( int eid = 0; eid < mesh.MaxEdgeID; ++eid) { 
 					if ( ! mesh.IsEdge(eid) )
 						continue;
-					Vector2i ev = mesh.GetEdgeV(eid);
+					Index2i ev = mesh.GetEdgeV(eid);
 					DMesh3.EdgeCollapseInfo collapseInfo; 
 					MeshResult result = mesh.CollapseEdge(ev[0], ev[1], out collapseInfo);
 					if ( result == MeshResult.Ok ) {
