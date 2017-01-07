@@ -30,11 +30,12 @@ namespace geometry3Test
 			test_Remesher.WriteDebugMeshes = true;
             //test_Remesher.test_basic_closed_remesh();
             //test_Remesher.test_remesh_smoothing();
-            //test_Remesher.test_remesh_constraints_1();
+            //test_Remesher.test_remesh_constraints_fixedverts();
+            test_Remesher.test_remesh_constraints_vertcurves();
 
 
-            test_Spatial.test_AABBTree_basic();
-            test_Spatial.test_AABBTree_TriDist();
+            //test_Spatial.test_AABBTree_basic();
+            //test_Spatial.test_AABBTree_TriDist();
 
 
             System.Console.WriteLine("Done tests, press enter key to exit");

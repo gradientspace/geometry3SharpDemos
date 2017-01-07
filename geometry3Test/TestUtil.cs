@@ -27,20 +27,22 @@ namespace geometry3Test
 		}
 
 
-		public static DMesh3 MakeOpenCylinder(bool bNoSharedVertices) 
+		public static DMesh3 MakeOpenCylinder(bool bNoSharedVertices, int nSlices = 16) 
 		{ 
 			DMesh3 mesh = new DMesh3();
-			OpenCylinderGenerator cylgen = new OpenCylinderGenerator() { NoSharedVertices = bNoSharedVertices };
+			OpenCylinderGenerator cylgen = new OpenCylinderGenerator() {
+                NoSharedVertices = bNoSharedVertices, Slices = nSlices };
 			cylgen.Generate();
 			cylgen.MakeMesh(mesh);
 			mesh.ReverseOrientation();
 			return mesh;
 		}
 
-		public static DMesh3 MakeCappedCylinder(bool bNoSharedVertices) 
+		public static DMesh3 MakeCappedCylinder(bool bNoSharedVertices, int nSlices = 16) 
 		{ 
 			DMesh3 mesh = new DMesh3(true, false, false, true);
-			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() { NoSharedVertices = bNoSharedVertices };
+			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() {
+                NoSharedVertices = bNoSharedVertices, Slices = nSlices };
 			cylgen.Generate();
 			cylgen.MakeMesh(mesh);
 			mesh.ReverseOrientation();
