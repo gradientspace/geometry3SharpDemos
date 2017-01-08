@@ -4,3 +4,4 @@ geometry3SharpDemos.userprefs
 *.suo
 geometry3Test/geometry3Test.csproj.user
 geometry3Test/test_output/
+Performance*.psess

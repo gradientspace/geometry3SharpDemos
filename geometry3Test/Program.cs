@@ -34,9 +34,9 @@ namespace geometry3Test
             //test_Remesher.test_remesh_constraints_vertcurves();
 
 
-            //test_Spatial.test_AABBTree_basic();
+            test_Spatial.test_AABBTree_basic();
             //test_Spatial.test_AABBTree_TriDist();
-            test_Spatial.test_AABBTree_profile();
+            //test_Spatial.test_AABBTree_profile();
 
 
             System.Console.WriteLine("Done tests, press enter key to exit");

@@ -38,7 +38,7 @@ namespace geometry3Test
 			return mesh;
 		}
 
-		public static DMesh3 MakeCappedCylinder(bool bNoSharedVertices, int nSlices = 16) 
+		public static DMesh3 MakeCappedCylinder(bool bNoSharedVertices, int nSlices = 16, bool bHole = false) 
 		{ 
 			DMesh3 mesh = new DMesh3(true, false, false, true);
 			CappedCylinderGenerator cylgen = new CappedCylinderGenerator() {
@@ -46,6 +46,8 @@ namespace geometry3Test
 			cylgen.Generate();
 			cylgen.MakeMesh(mesh);
 			mesh.ReverseOrientation();
+            if (bHole)
+                mesh.RemoveTriangle(0);
 			return mesh;
 		}
 
@@ -59,7 +61,7 @@ namespace geometry3Test
             // construct mesh projection target
             DMesh3 meshCopy = new DMesh3(mesh);
             DMeshAABBTree3 tree = new DMeshAABBTree3(meshCopy);
-            tree.Build(DMeshAABBTree3.ClusterPolicy.Fastest);
+            tree.Build();
             MeshProjectionTarget target = new MeshProjectionTarget() {
                 Mesh = meshCopy, Spatial = tree
             };

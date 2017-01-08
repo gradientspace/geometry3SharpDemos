@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using g3;
 
 namespace geometry3Test
@@ -25,6 +26,8 @@ namespace geometry3Test
                 return TestUtil.MakeRemeshedCappedCylinder(0.5f);
             else if (n == 6)
                 return TestUtil.MakeRemeshedCappedCylinder(0.25f);
+            else if (n == 7)
+                return TestUtil.MakeCappedCylinder(false, 128, true);
             throw new Exception("test_Spatial.MakeSpatialTestMesh: unknown mesh case");
         }
         public static int NumTestCases { get { return 7; } }
@@ -33,13 +36,31 @@ namespace geometry3Test
 
         public static void test_AABBTree_basic()
         {
-            int meshCase = 4;
-            DMesh3 mesh = MakeSpatialTestMesh(meshCase);
-            DMeshAABBTree3 tree = new DMeshAABBTree3(mesh);
-            tree.Build();
+            List<int> cases = new List<int>() { 0, 1, 2, 3, 4, 7 };
 
-            tree.TestCoverage();
-            tree.TotalVolume();
+            foreach (int meshCase in cases) {
+
+                DMesh3 mesh = MakeSpatialTestMesh(meshCase);
+                DMeshAABBTree3 treeMedian = new DMeshAABBTree3(mesh);
+                treeMedian.Build(DMeshAABBTree3.BuildStrategy.TopDownMedian);
+                treeMedian.TestCoverage();
+                treeMedian.TotalVolume();
+
+                DMeshAABBTree3 treeMidpoint = new DMeshAABBTree3(mesh);
+                treeMidpoint.Build(DMeshAABBTree3.BuildStrategy.TopDownMidpoint);
+                treeMidpoint.TestCoverage();
+                treeMidpoint.TotalVolume();
+
+                DMeshAABBTree3 treeUpFast = new DMeshAABBTree3(mesh);
+                treeUpFast.Build(DMeshAABBTree3.BuildStrategy.BottomUpFromOneRings, DMeshAABBTree3.ClusterPolicy.Fastest);
+                treeUpFast.TestCoverage();
+                treeUpFast.TotalVolume();
+
+                DMeshAABBTree3 treeUpN = new DMeshAABBTree3(mesh);
+                treeUpN.Build(DMeshAABBTree3.BuildStrategy.BottomUpFromOneRings, DMeshAABBTree3.ClusterPolicy.FastVolumeMetric);
+                treeUpN.TestCoverage();
+                treeUpN.TotalVolume();
+            }
         }
 
 
@@ -79,14 +100,36 @@ namespace geometry3Test
 
         public static void test_AABBTree_profile()
         {
+            System.Console.WriteLine("Building test meshes");
+            DMesh3[] meshes = new DMesh3[NumTestCases];
+            for ( int i = 0; i < NumTestCases; ++i )
+                meshes[i] = MakeSpatialTestMesh(i);
+            System.Console.WriteLine("done!");
+
+
+            int N = 50;
+
+            // avoid garbage collection
+            List<DMeshAABBTree3> trees = new List<DMeshAABBTree3>();
+            DMeshAABBTree3 tree = null;
+
+
+
             for (int i = 0; i < NumTestCases; ++i) {
-                System.Diagnostics.Stopwatch w = new System.Diagnostics.Stopwatch();
-                w.Start();
-                DMeshAABBTree3 tree0 = new DMeshAABBTree3(MakeSpatialTestMesh(i));
-                tree0.Build();
-                w.Stop();
-                System.Console.WriteLine(string.Format("Case {0}: time {1}  tris {2} vol {3}  len {4}", i, w.Elapsed, tree0.Mesh.TriangleCount, tree0.TotalVolume(), tree0.TotalExtentSum()));
+                Stopwatch w = new Stopwatch();
+                for (int j = 0; j < N; ++j) {
+                    tree = new DMeshAABBTree3(meshes[i]);
+                    w.Start();
+                    tree.Build(DMeshAABBTree3.BuildStrategy.TopDownMidpoint);
+                    //tree.Build(DMeshAABBTree3.BuildStrategy.TopDownMedian);
+                    //tree.Build(DMeshAABBTree3.BuildStrategy.BottomUpFromOneRings, DMeshAABBTree3.ClusterPolicy.FastVolumeMetric);
+                    w.Stop();
+                    trees.Add(tree);
+                }
+                double avg_time = w.ElapsedTicks / (double)N;
+                System.Console.WriteLine(string.Format("Case {0}: time {1}  tris {2} vol {3}  len {4}", i, avg_time, tree.Mesh.TriangleCount, tree.TotalVolume(), tree.TotalExtentSum()));
             }
+
         }
 
 
