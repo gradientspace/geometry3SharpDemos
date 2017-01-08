@@ -11,23 +11,35 @@ namespace geometry3Test
 
         public static DMesh3 MakeSpatialTestMesh(int n)
         {
-            if ( n == 0 )
+            if (n == 0)
                 return TestUtil.MakeCappedCylinder(false);
-            else if ( n == 1 )
+            else if (n == 1)
                 return TestUtil.MakeCappedCylinder(true);
+            else if (n == 2)
+                return TestUtil.MakeCappedCylinder(false, 256);
+            else if (n == 3)
+                return TestUtil.MakeCappedCylinder(true, 256);
+            else if (n == 4)
+                return TestUtil.MakeRemeshedCappedCylinder(1.0f);
+            else if (n == 5)
+                return TestUtil.MakeRemeshedCappedCylinder(0.5f);
+            else if (n == 6)
+                return TestUtil.MakeRemeshedCappedCylinder(0.25f);
             throw new Exception("test_Spatial.MakeSpatialTestMesh: unknown mesh case");
         }
+        public static int NumTestCases { get { return 7; } }
 
 
 
         public static void test_AABBTree_basic()
         {
-            int meshCase = 0;
+            int meshCase = 4;
             DMesh3 mesh = MakeSpatialTestMesh(meshCase);
             DMeshAABBTree3 tree = new DMeshAABBTree3(mesh);
             tree.Build();
 
             tree.TestCoverage();
+            tree.TotalVolume();
         }
 
 
@@ -61,9 +73,22 @@ namespace geometry3Test
                 if ( Math.Abs(qBrute.DistanceSquared - qTree.DistanceSquared) > MathUtil.ZeroTolerance )
                     Util.gBreakToDebugger();
             }
-
-
         }
+
+
+
+        public static void test_AABBTree_profile()
+        {
+            for (int i = 0; i < NumTestCases; ++i) {
+                System.Diagnostics.Stopwatch w = new System.Diagnostics.Stopwatch();
+                w.Start();
+                DMeshAABBTree3 tree0 = new DMeshAABBTree3(MakeSpatialTestMesh(i));
+                tree0.Build();
+                w.Stop();
+                System.Console.WriteLine(string.Format("Case {0}: time {1}  tris {2} vol {3}  len {4}", i, w.Elapsed, tree0.Mesh.TriangleCount, tree0.TotalVolume(), tree0.TotalExtentSum()));
+            }
+        }
+
 
     }
 }

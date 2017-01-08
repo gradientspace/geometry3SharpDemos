@@ -48,5 +48,47 @@ namespace geometry3Test
 			mesh.ReverseOrientation();
 			return mesh;
 		}
+
+
+        // gets slow for small res factor...
+		public static DMesh3 MakeRemeshedCappedCylinder(double fResFactor = 1.0) 
+		{ 
+			DMesh3 mesh = TestUtil.MakeCappedCylinder(false, 128);
+			MeshUtil.ScaleMesh(mesh, Frame3f.Identity, new Vector3f(1,2,1));
+
+            // construct mesh projection target
+            DMesh3 meshCopy = new DMesh3(mesh);
+            DMeshAABBTree3 tree = new DMeshAABBTree3(meshCopy);
+            tree.Build(DMeshAABBTree3.ClusterPolicy.Fastest);
+            MeshProjectionTarget target = new MeshProjectionTarget() {
+                Mesh = meshCopy, Spatial = tree
+            };
+            MeshConstraints cons = new MeshConstraints();
+            EdgeRefineFlags useFlags = EdgeRefineFlags.NoFlip;
+            foreach ( int eid in mesh.EdgeIndices() ) {
+                double fAngle = MeshUtil.OpeningAngleD(mesh, eid);
+                if (fAngle > 30.0f) {
+                    cons.SetOrUpdateEdgeConstraint(eid, new EdgeConstraint(useFlags));
+                    Index2i ev = mesh.GetEdgeV(eid);
+                    int nSetID0 = (mesh.GetVertex(ev[0]).y > 1) ? 1 : 2;
+                    int nSetID1 = (mesh.GetVertex(ev[1]).y > 1) ? 1 : 2;
+                    cons.SetOrUpdateVertexConstraint(ev[0], new VertexConstraint(true, nSetID0));
+                    cons.SetOrUpdateVertexConstraint(ev[1], new VertexConstraint(true, nSetID1));
+                }
+            }
+			Remesher r = new Remesher(mesh);
+            r.SetExternalConstraints(cons);
+            r.SetProjectionTarget(target);
+			r.EnableFlips = r.EnableSplits = r.EnableCollapses = true;
+            r.MinEdgeLength = 0.1f * fResFactor;
+            r.MaxEdgeLength = 0.2f * fResFactor;
+			r.EnableSmoothing = true;
+            r.SmoothSpeedT = 0.5f;
+            for (int k = 0; k < 20; ++k) 
+                r.BasicRemeshPass();
+            return mesh;
+		}
+
+
 	}
 }

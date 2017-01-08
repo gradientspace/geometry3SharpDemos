@@ -6,7 +6,7 @@ namespace geometry3Test
 {
 	public static class test_Remesher 
 	{
-		public static bool WriteDebugMeshes = false;
+		public static bool WriteDebugMeshes = true;
 
 
 		public static DMesh3 make_good_cylinder(float fResScale = 1.0f) {
@@ -111,7 +111,7 @@ namespace geometry3Test
 
         public static void test_remesh_constraints_fixedverts()
         {
-            int Slices = 64;
+            int Slices = 128;
 			DMesh3 mesh = TestUtil.MakeCappedCylinder(false, Slices);
 			MeshUtil.ScaleMesh(mesh, Frame3f.Identity, new Vector3f(1,2,1));
 			mesh.CheckValidity();
@@ -127,7 +127,7 @@ namespace geometry3Test
             };
 
             if ( WriteDebugMeshes )
-				TestUtil.WriteDebugMesh(mesh, "remesh_constraints_test_before.obj");
+				TestUtil.WriteDebugMesh(mesh, "remesh_fixed_constraints_test_before.obj");
 
             // construct constraint set
             MeshConstraints cons = new MeshConstraints();
@@ -147,42 +147,29 @@ namespace geometry3Test
                 }
             }
 
-
 			Remesher r = new Remesher(mesh);
             r.SetExternalConstraints(cons);
             r.SetProjectionTarget(target);
 
-            double fResScale = 1.0f;
-            //double fResScale = 0.5f;
+            //double fResScale = 1.0f;
+            double fResScale = 0.5f;
 			r.EnableFlips = r.EnableSplits = r.EnableCollapses = true;
 			r.MinEdgeLength = 0.1f * fResScale;
 			r.MaxEdgeLength = 0.2f * fResScale;
-			r.EnableSmoothing = true;
-			r.SmoothSpeedT = 0.1f;
-
-            r.EnableFlips = r.EnableSmoothing = false;
-            r.MinEdgeLength = 0.05f * fResScale;
-            for (int k = 0; k < 10; ++k) {
-                r.BasicRemeshPass();
-                mesh.CheckValidity();
-            }
-
-            r.MinEdgeLength = 0.1f * fResScale;
-            r.MaxEdgeLength = 0.2f * fResScale;
-            r.EnableFlips = true;
-            r.EnableCollapses = true;
-            r.EnableSplits = true;
             r.EnableSmoothing = true;
             r.SmoothSpeedT = 0.5f;
 
-            for (int k = 0; k < 10; ++k) {
-                r.BasicRemeshPass();
-                mesh.CheckValidity();
+            try {
+                for (int k = 0; k < 20; ++k) {
+                    r.BasicRemeshPass();
+                    mesh.CheckValidity();
+                }
+            } catch {
+                // ignore
             }
 
-
             if ( WriteDebugMeshes )
-				TestUtil.WriteDebugMesh(mesh, "remesh_constraints_test_after.obj");
+                TestUtil.WriteDebugMesh(mesh, "remesh_fixed_constraints_test_after.obj");
         }
 
 
@@ -227,7 +214,7 @@ namespace geometry3Test
 
 
             if ( WriteDebugMeshes )
-				TestUtil.WriteDebugMesh(mesh, "remesh_constraints_test_before.obj");
+				TestUtil.WriteDebugMesh(mesh, "remesh_analytic_constraints_test_before.obj");
 
             // construct constraint set
             MeshConstraints cons = new MeshConstraints();
@@ -283,7 +270,7 @@ namespace geometry3Test
             System.Console.WriteLine("Second Pass Timing: " + stopwatch.Elapsed);
 
             if ( WriteDebugMeshes )
-				TestUtil.WriteDebugMesh(mesh, "remesh_constraints_test_after.obj");
+				TestUtil.WriteDebugMesh(mesh, "remesh_analytic_constraints_test_after.obj");
         }
 
 
