@@ -31,10 +31,10 @@ namespace geometry3Test
             //test_Remesher.test_basic_closed_remesh();
             //test_Remesher.test_remesh_smoothing();
             //test_Remesher.test_remesh_constraints_fixedverts();
-            //test_Remesher.test_remesh_constraints_vertcurves();
+            test_Remesher.test_remesh_constraints_vertcurves();
 
 
-            test_Spatial.test_AABBTree_basic();
+            //test_Spatial.test_AABBTree_basic();
             //test_Spatial.test_AABBTree_TriDist();
             //test_Spatial.test_AABBTree_profile();
 
@@ -46,6 +46,7 @@ namespace geometry3Test
 
 		static void test_dmesh() {
 			test_DMesh3.basic_tests();
+            test_DMesh3.test_remove();
 
 
 			int split_rounds = 100;

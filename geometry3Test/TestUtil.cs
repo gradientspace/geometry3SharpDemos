@@ -27,6 +27,17 @@ namespace geometry3Test
 		}
 
 
+        public static DMesh3 MakeTrivialRect()
+        {
+            DMesh3 rectMesh = new DMesh3();
+            TrivialRectGenerator rgen = new TrivialRectGenerator();
+            rgen.Generate();
+            rgen.MakeMesh(rectMesh);
+            rectMesh.CheckValidity();
+            return rectMesh;
+        }
+
+
 		public static DMesh3 MakeOpenCylinder(bool bNoSharedVertices, int nSlices = 16) 
 		{ 
 			DMesh3 mesh = new DMesh3();

@@ -18,12 +18,84 @@ namespace geometry3Test
             CappedCylinderGenerator cylgen = new CappedCylinderGenerator();
             cylgen.Generate();
             cylgen.MakeMesh(tmp);
-
             tmp.CheckValidity();
 
             System.Console.WriteLine("cylinder ok");
-
         }
+
+
+        public static void test_remove()
+        {
+            System.Console.WriteLine("DMesh3:test_remove() starting");
+
+            List<DMesh3> testMeshes = new List<DMesh3>() {
+                TestUtil.MakeTrivialRect(),
+                TestUtil.MakeOpenCylinder(false),       // removing any creates bowtie!
+                TestUtil.MakeOpenCylinder(true),
+                TestUtil.MakeCappedCylinder(false),
+                TestUtil.MakeCappedCylinder(true)
+            };
+
+            // remove-one tests
+            foreach (DMesh3 mesh in testMeshes) {
+                int N = mesh.TriangleCount;
+                for (int j = 0; j < N; ++j) {
+                    DMesh3 r1 = new DMesh3(mesh);
+                    r1.RemoveTriangle(j, false);
+                    r1.CheckValidity(true);         // remove might create non-manifold tris at bdry
+
+                    DMesh3 r2 = new DMesh3(mesh);
+                    r2.RemoveTriangle(j, true);
+                    r2.CheckValidity(true);
+
+                    DMesh3 r3 = new DMesh3(mesh);
+                    r3.RemoveTriangle(j, false, true);
+                    r3.CheckValidity(false);         // remove might create non-manifold tris at bdry
+
+                    DMesh3 r4 = new DMesh3(mesh);
+                    r4.RemoveTriangle(j, true, true);
+                    r4.CheckValidity(false);
+                }
+            }
+
+
+            // grinder tests
+            foreach ( DMesh3 mesh in testMeshes ) {
+
+                // sequential
+                DMesh3 tmp = new DMesh3(mesh);
+                bool bDone = false;
+                while (!bDone) {
+                    bDone = true;
+                    foreach ( int ti in tmp.TriangleIndices() ) {
+                        if ( tmp.IsTriangle(ti) && tmp.RemoveTriangle(ti, true, true) ) {
+                            bDone = false;
+                            tmp.CheckValidity(false);
+                        }
+                    }
+                }
+                System.Console.WriteLine(string.Format("remove_all sequential: before {0} after {1}", mesh.TriangleCount, tmp.TriangleCount));
+
+                // randomized
+                tmp = new DMesh3(mesh);
+                bDone = false;
+                while (!bDone) {
+                    bDone = true;
+                    foreach ( int ti in tmp.TriangleIndices() ) {
+                        int uset = (ti + 256) % tmp.MaxTriangleID;        // break symmetry
+                        if ( tmp.IsTriangle(uset) && tmp.RemoveTriangle(uset, true, true) ) {
+                            bDone = false;
+                            tmp.CheckValidity(false);
+                        }
+                    }
+                }
+                System.Console.WriteLine(string.Format("remove_all randomized: before {0} after {1}", mesh.TriangleCount, tmp.TriangleCount));
+            }
+
+
+            System.Console.WriteLine("remove ok");
+        }
+
 
 
 		public static void split_tests(bool bTestBoundary, int N = 100) {
