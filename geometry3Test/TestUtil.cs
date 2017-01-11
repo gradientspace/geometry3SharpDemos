@@ -92,6 +92,7 @@ namespace geometry3Test
 			Remesher r = new Remesher(mesh);
             r.SetExternalConstraints(cons);
             r.SetProjectionTarget(target);
+            r.Precompute();
 			r.EnableFlips = r.EnableSplits = r.EnableCollapses = true;
             r.MinEdgeLength = 0.1f * fResFactor;
             r.MaxEdgeLength = 0.2f * fResFactor;

@@ -148,8 +148,11 @@ namespace geometry3Test
             }
 
 			Remesher r = new Remesher(mesh);
+            r.Precompute();
             r.SetExternalConstraints(cons);
             r.SetProjectionTarget(target);
+
+            var stopwatch = Stopwatch.StartNew();
 
             //double fResScale = 1.0f;
             double fResScale = 0.5f;
@@ -168,6 +171,9 @@ namespace geometry3Test
                 // ignore
             }
 
+            stopwatch.Stop();
+            System.Console.WriteLine("Second Pass Timing: " + stopwatch.Elapsed);
+
             if ( WriteDebugMeshes )
                 TestUtil.WriteDebugMesh(mesh, "remesh_fixed_constraints_test_after.obj");
         }
@@ -182,8 +188,9 @@ namespace geometry3Test
         {
             int Slices = 16;
             DMesh3 mesh = TestUtil.MakeCappedCylinder(false, Slices);
-            AxisAlignedBox3d boundsA = mesh.CachedBounds;
             MeshUtil.ScaleMesh(mesh, Frame3f.Identity, new Vector3f(1, 2, 1));
+            //DMesh3 mesh = TestUtil.MakeRemeshedCappedCylinder(0.25);
+            //DMesh3 mesh = TestUtil.MakeRemeshedCappedCylinder(1.0);
             mesh.CheckValidity();
             AxisAlignedBox3d bounds = mesh.CachedBounds;
 
@@ -201,8 +208,8 @@ namespace geometry3Test
                 Cylinder = new Cylinder3d(new Vector3d(0, 1, 0), Vector3d.AxisY, 1, 2)
             };
 
-            IProjectionTarget target = mesh_target;
-            //IProjectionTarget target = cyl_target;
+            //IProjectionTarget target = mesh_target;
+            IProjectionTarget target = cyl_target;
 
             // construct projection target circles
             CircleProjectionTarget bottomCons = new CircleProjectionTarget() {
@@ -245,8 +252,10 @@ namespace geometry3Test
 
 
 			Remesher r = new Remesher(mesh);
-            r.SetExternalConstraints(cons);
+            //r.SetExternalConstraints(cons);
             r.SetProjectionTarget(target);
+            r.Precompute();
+            r.ENABLE_PROFILING = true;
 
             var stopwatch = Stopwatch.StartNew();
 
