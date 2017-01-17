@@ -31,12 +31,15 @@ namespace geometry3Test
             //test_Remesher.test_basic_closed_remesh();
             //test_Remesher.test_remesh_smoothing();
             //test_Remesher.test_remesh_constraints_fixedverts();
-            test_Remesher.test_remesh_constraints_vertcurves();
+            //test_Remesher.test_remesh_constraints_vertcurves();
 
 
             //test_Spatial.test_AABBTree_basic();
             //test_Spatial.test_AABBTree_TriDist();
             //test_Spatial.test_AABBTree_profile();
+
+
+            test_MeshGen.test_basic_generators();
 
 
             System.Console.WriteLine("Done tests, press enter key to exit");

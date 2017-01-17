@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "g3MeshConvert", "g3MeshConvert\g3MeshConvert.csproj", "{03D79D36-67E3-4A32-AB99-55AB789F8255}"
+EndProject
 Global
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
@@ -49,6 +51,18 @@ Global
 		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x64.Build.0 = Release|Any CPU
 		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x86.ActiveCfg = Release|Any CPU
 		{0C518DDA-28FE-44CA-9AB0-F9773974F13A}.Release|x86.Build.0 = Release|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Debug|x64.Build.0 = Debug|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Debug|x86.Build.0 = Debug|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Release|x64.ActiveCfg = Release|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Release|x64.Build.0 = Release|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Release|x86.ActiveCfg = Release|Any CPU
+		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

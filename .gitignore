@@ -5,3 +5,5 @@ geometry3SharpDemos.userprefs
 geometry3Test/geometry3Test.csproj.user
 geometry3Test/test_output/
 Performance*.psess
+g3MeshConvert/bin/
+g3MeshConvert/obj/
