@@ -21,9 +21,9 @@ namespace geometry3Test
         {
 
             //test_VectorTypes.test_rcvector();
-			//test_MeshIO.test_simple_obj();
-			//test_Math.test_VectorTanCot();
-
+            //test_MeshIO.test_simple_obj();
+            //test_Math.test_VectorTanCot();
+            //test_Math.test_RayBoxIntersect();
 
 			//test_dmesh();
 
@@ -37,9 +37,9 @@ namespace geometry3Test
             //test_Spatial.test_AABBTree_basic();
             //test_Spatial.test_AABBTree_TriDist();
             //test_Spatial.test_AABBTree_profile();
+            test_Spatial.test_AABBTree_RayHit();
 
-
-            test_MeshGen.test_basic_generators();
+            //test_MeshGen.test_basic_generators();
 
 
             System.Console.WriteLine("Done tests, press enter key to exit");

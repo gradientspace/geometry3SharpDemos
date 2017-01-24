@@ -27,6 +27,29 @@ namespace geometry3Test
 		}
 
 
+
+        // extension methods for Random
+        public static Vector3d Direction(this Random rand)
+        {
+            Vector3d r = new Vector3d((2 * rand.NextDouble() - 1), 
+                                      (2 * rand.NextDouble() - 1), 
+                                      (2 * rand.NextDouble() - 1));
+            r.Normalize();
+            return r;
+        }
+        public static Vector3d PointInRange(this Random rand, double extent)
+        {
+            Vector3d r = new Vector3d( extent * (2 * rand.NextDouble() - 1), 
+                                      extent * (2 * rand.NextDouble() - 1), 
+                                      extent * (2 * rand.NextDouble() - 1));
+            return r;
+        }
+        public static Vector3d PositivePoint(this Random rand)
+        {
+            return new Vector3d(rand.NextDouble(), rand.NextDouble(), rand.NextDouble());
+        }
+
+
         public static DMesh3 MakeTrivialRect()
         {
             DMesh3 rectMesh = new DMesh3();

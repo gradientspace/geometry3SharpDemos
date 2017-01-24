@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using g3;
 
 namespace geometry3Test 
@@ -32,6 +33,75 @@ namespace geometry3Test
 					                         tanAngle, vtanAB, tanErr, 1/tanAngle, vcotAB, cotErr, angle);
 			}
 		}
+
+
+
+
+
+        static void assert_same_hit(AxisAlignedBox3d aabox, Box3d obox, Ray3d ray, bool bIsAlwaysHit)
+        {
+            IntrRay3Box3 ohit = new IntrRay3Box3(ray, obox);
+            if ( bIsAlwaysHit )
+                Debug.Assert(ohit.Find() == true);
+            IntrRay3AxisAlignedBox3 aabbhit = new IntrRay3AxisAlignedBox3(ray, aabox);
+            if ( bIsAlwaysHit )
+                Debug.Assert(aabbhit.Find() == true);
+
+            if (ohit.Find()) {
+                Debug.Assert(MathUtil.EpsilonEqual(ohit.RayParam0, aabbhit.RayParam0, MathUtil.ZeroTolerance));
+            }
+        }
+
+
+        // [RMS] this only tests some basic cases...
+        public static void test_RayBoxIntersect()
+        {
+            Random rand = new Random(316136327);
+
+            // check that box hit works 
+            for ( int ii = 0; ii < 1000; ++ii ) {
+                // generate random triangle
+                Triangle3d t = new Triangle3d(rand.PointInRange(10), rand.PointInRange(10), rand.PointInRange(10));
+                AxisAlignedBox3d bounds = new AxisAlignedBox3d(t.V0);
+                bounds.Contain(t.V1);
+                bounds.Contain(t.V2);
+                Vector3d c = (t.V0 + t.V1 + t.V2) / 3.0;
+                for ( int jj = 0; jj < 1000; ++jj) {
+                    Vector3d d = rand.Direction();
+                    Ray3d ray = new Ray3d(c - 100 * d, d);
+                    IntrRay3AxisAlignedBox3 bhit = new IntrRay3AxisAlignedBox3(ray, bounds);
+                    Debug.Assert(bhit.Find());
+                    IntrRay3Triangle3 thit = new IntrRay3Triangle3(ray, t);
+                    Debug.Assert(thit.Find());
+                    Debug.Assert(bhit.RayParam0 < thit.RayParameter);
+                }
+            }
+
+            int N = 100;
+            for (int ii = 0; ii < N; ++ii) {
+
+                // generate random boxes
+                Vector3d c = rand.PointInRange(10);
+                Vector3d e = rand.PositivePoint();
+                AxisAlignedBox3d aabox = new AxisAlignedBox3d(c - e, c + e);
+                Box3d obox = new Box3d(c, Vector3d.AxisX, Vector3d.AxisY, Vector3d.AxisZ, e);
+                double r = aabox.DiagonalLength;
+
+                // center-out tests
+                for (int jj = 0; jj < N; ++jj) {
+                    Ray3d ray = new Ray3d(c, rand.Direction());
+                    assert_same_hit(aabox, obox, ray, true);
+                }
+
+                // outside-in tests
+                for (int jj = 0; jj < N; ++jj) {
+                    Vector3d p = c + 2 * r * rand.Direction();
+                    Ray3d ray = new Ray3d(p, (c - p).Normalized);
+                    assert_same_hit(aabox, obox, ray, true);
+                }
+
+            }
+        }
 
 
 	}
