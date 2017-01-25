@@ -45,6 +45,8 @@ namespace geometry3Test
             //test_Solvers.test_SparseCG();
             test_Solvers.test_Laplacian();
 
+            test_Deformers.test_LaplacianDeformation();
+
 
             System.Console.WriteLine("Done tests, press enter key to exit");
             System.Console.ReadLine();
