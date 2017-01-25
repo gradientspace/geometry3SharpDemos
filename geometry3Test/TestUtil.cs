@@ -26,6 +26,16 @@ namespace geometry3Test
 			s.Close();
 		}
 
+        public static void WriteDebugMeshes(List<IMesh> meshes, string sfilename)
+        {
+            OBJWriter writer = new OBJWriter();
+            var s = new System.IO.StreamWriter(WRITE_PATH + sfilename, false);
+            List<WriteMesh> wm = new List<WriteMesh>();
+            foreach (var m in meshes)
+                wm.Add(new WriteMesh(m));
+            writer.Write(s, wm, new WriteOptions() { bWriteGroups = true } );
+			s.Close();
+		}
 
 
         // extension methods for Random
@@ -49,6 +59,20 @@ namespace geometry3Test
             return new Vector3d(rand.NextDouble(), rand.NextDouble(), rand.NextDouble());
         }
 
+
+
+        public static DMesh3 MakeMarker(Vector3d vPos, float fRadius, Colorf color)
+        {
+            DMesh3 markerMesh = new DMesh3(true, true, false);
+            TrivialDiscGenerator gen = new TrivialDiscGenerator() { Slices = 8 };
+            gen.Radius = fRadius;
+            gen.Generate();
+            gen.MakeMesh(markerMesh);
+            foreach (int vid in markerMesh.VertexIndices())
+                markerMesh.SetVertexColor(vid, color);
+            MeshTransforms.Translate(markerMesh, vPos.x, vPos.y, vPos.z);
+            return markerMesh;
+        }
 
         public static DMesh3 MakeTrivialRect()
         {
