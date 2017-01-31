@@ -28,15 +28,19 @@ namespace geometry3Test
                 return TestUtil.MakeRemeshedCappedCylinder(0.25f);
             else if (n == 7)
                 return TestUtil.MakeCappedCylinder(false, 128, true);
+            else if (n == 8)
+                return TestUtil.LoadTestMesh("c:\\scratch\\test_bunny.stl");
+            else if (n == 9)
+                return TestUtil.LoadTestMesh("c:\\scratch\\bunny_solid.obj");
             throw new Exception("test_Spatial.MakeSpatialTestMesh: unknown mesh case");
         }
-        public static int NumTestCases { get { return 7; } }
+        public static int NumTestCases { get { return 10; } }
 
 
 
         public static void test_AABBTree_basic()
         {
-            List<int> cases = new List<int>() { 0, 1, 2, 3, 4, 7 };
+            List<int> cases = new List<int>() { 0, 1, 2, 3, 4, 7, 8, 9 };
 
             foreach (int meshCase in cases) {
 
@@ -98,31 +102,42 @@ namespace geometry3Test
 
 
 
-        public static void test_AABBTree_RayHit(int meshCase = 0)
+        public static void test_AABBTree_RayHit(int meshCase = 9)
         {
             DMesh3 mesh = MakeSpatialTestMesh(meshCase);
             DMeshAABBTree3 tree = new DMeshAABBTree3(mesh);
             tree.Build();
+            tree.TestCoverage();
 
             AxisAlignedBox3d bounds = mesh.CachedBounds;
             Vector3d ext = bounds.Extents;
             Vector3d c = bounds.Center;
-            double r = bounds.DiagonalLength;
+            double r = bounds.DiagonalLength / 4;
 
             Random rand = new Random(316136327);
+
+
+            tree.FindNearestHitTriangle(
+                new Ray3f(100 * Vector3f.One, Vector3f.One));
 
 
             // test rays out from center of box, and rays in towards it
             // (should all hit for standard test cases)
             int hits = 0;
-            int N = 10000;
+            int N = (meshCase > 7 ) ? 1000 : 10000;
+#if true
             for ( int ii = 0; ii < N; ++ii ) {
+                if (ii % 100 == 0)
+                    System.Console.WriteLine("{0} / {1}", ii, N);
+
                 Vector3d p = (ii < N/2) ? c : c + 2*r*rand.Direction();
                 Vector3d d = (ii < N/2) ? rand.Direction() : (c - p).Normalized;
                 Ray3d ray = new Ray3d(p, d);
 
                 int tNearBrute = MeshQueries.FindHitTriangle_LinearSearch(mesh, ray);
                 int tNearTree = tree.FindNearestHitTriangle(ray);
+
+                //System.Console.WriteLine("{0} - {1}", tNearBrute, tree.TRI_TEST_COUNT);
 
                 if (tNearBrute == DMesh3.InvalidID) {
                     Debug.Assert(tNearBrute == tNearTree);
@@ -139,7 +154,44 @@ namespace geometry3Test
                 Debug.Assert(Math.Abs(qBrute.RayParameter - qTree.RayParameter) < MathUtil.ZeroTolerance);
             }
             Debug.Assert(hits == N);
-            System.Console.WriteLine("{0} hits out of {1} rays", hits, N);
+            System.Console.WriteLine("in/out rays: {0} hits out of {1} rays", hits, N);
+#endif
+
+
+
+
+            // random rays
+            hits = 0;
+            for (int ii = 0; ii < N; ++ii) {
+                if (ii % 100 == 0)
+                    System.Console.WriteLine("{0} / {1}", ii, N);
+
+                Vector3d target = c + rand.PointInRange(r);
+                Vector3d o = c + rand.PointInRange(10 * r);
+                Ray3d ray = new Ray3d(o, (target - o).Normalized);
+
+                int tNearBrute = MeshQueries.FindHitTriangle_LinearSearch(mesh, ray);
+                int tNearTree = tree.FindNearestHitTriangle(ray);
+
+                //System.Console.WriteLine("{0} - {1}", tNearBrute, tree.TRI_TEST_COUNT);
+
+                if (tNearBrute == DMesh3.InvalidID) {
+                    Debug.Assert(tNearBrute == tNearTree);
+                    continue;
+                }
+                ++hits;
+
+                IntrRay3Triangle3 qBrute = MeshQueries.TriangleIntersection(mesh, tNearBrute, ray);
+                IntrRay3Triangle3 qTree = MeshQueries.TriangleIntersection(mesh, tNearTree, ray);
+
+                double dotBrute = mesh.GetTriNormal(tNearBrute).Dot(ray.Direction);
+                double dotTree = mesh.GetTriNormal(tNearTree).Dot(ray.Direction);
+
+                Debug.Assert(Math.Abs(qBrute.RayParameter - qTree.RayParameter) < MathUtil.ZeroTolerance);
+            }
+
+            System.Console.WriteLine("random rays: hit {0} of {1} rays", hits, N);
+
         }
 
 
@@ -158,7 +210,7 @@ namespace geometry3Test
             System.Console.WriteLine("done!");
 
 
-            int N = 50;
+            int N = 10;
 
             // avoid garbage collection
             List<DMeshAABBTree3> trees = new List<DMeshAABBTree3>();

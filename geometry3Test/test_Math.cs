@@ -41,11 +41,18 @@ namespace geometry3Test
         static void assert_same_hit(AxisAlignedBox3d aabox, Box3d obox, Ray3d ray, bool bIsAlwaysHit)
         {
             IntrRay3Box3 ohit = new IntrRay3Box3(ray, obox);
+            ohit.Find();
             if ( bIsAlwaysHit )
                 Debug.Assert(ohit.Find() == true);
             IntrRay3AxisAlignedBox3 aabbhit = new IntrRay3AxisAlignedBox3(ray, aabox);
+            aabbhit.Find();
             if ( bIsAlwaysHit )
                 Debug.Assert(aabbhit.Find() == true);
+
+            Debug.Assert(ohit.Find() == aabbhit.Find());
+
+            Debug.Assert(ohit.Test() == ohit.Find());
+            Debug.Assert(aabbhit.Test() == aabbhit.Find());
 
             if (ohit.Find()) {
                 Debug.Assert(MathUtil.EpsilonEqual(ohit.RayParam0, aabbhit.RayParam0, MathUtil.ZeroTolerance));
@@ -99,8 +106,51 @@ namespace geometry3Test
                     Ray3d ray = new Ray3d(p, (c - p).Normalized);
                     assert_same_hit(aabox, obox, ray, true);
                 }
-
             }
+
+
+
+            // random rays
+            int hits = 0;
+            int InnerN = 1000;
+            for (int ii = 0; ii < N; ++ii) {
+
+                // generate random boxe
+                Vector3d c = rand.PointInRange(10);
+                Vector3d e = rand.PositivePoint();
+
+                // every tenth box, set an axis to degenerate
+                if (ii % 10 == 0)
+                    e[rand.Next() % 3] = 0;
+
+
+                AxisAlignedBox3d aabox = new AxisAlignedBox3d(c - e, c + e);
+                Box3d obox = new Box3d(c, Vector3d.AxisX, Vector3d.AxisY, Vector3d.AxisZ, e);
+                double r = aabox.DiagonalLength;
+
+
+                TrivialBox3Generator boxgen = new TrivialBox3Generator() { Box = obox };
+                boxgen.Generate();
+                DMesh3 mesh = new DMesh3();
+                boxgen.MakeMesh(mesh);
+
+                for (int i = 0; i < InnerN; ++i) {
+                    Vector3d target = c + rand.PointInRange(r);
+                    Vector3d o = c + rand.PointInRange(10 * r);
+                    Ray3d ray = new Ray3d(o, (target - o).Normalized);
+                    assert_same_hit(aabox, obox, ray, false);
+
+                    int hitT = MeshQueries.FindHitTriangle_LinearSearch(mesh, ray);
+                    bool bMeshHit = (hitT != DMesh3.InvalidID);
+                    if (bMeshHit)
+                        ++hits;
+                    IntrRay3AxisAlignedBox3 aabbhit = new IntrRay3AxisAlignedBox3(ray, aabox);
+                    Debug.Assert(aabbhit.Find() == bMeshHit);
+                    Debug.Assert(aabbhit.Test() == bMeshHit);
+                }
+            }
+
+            System.Console.WriteLine("hit {0} of {1} rays", hits, N * InnerN);
         }
 
 
