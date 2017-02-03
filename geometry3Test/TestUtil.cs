@@ -170,5 +170,28 @@ namespace geometry3Test
 		}
 
 
+
+
+
+        public static int[] GetTrisOnPositiveSide(DMesh3 mesh, Frame3f plane)
+        {
+            DVector<int> keep_tris = new DVector<int>();
+
+            Vector3d[] tri = new Vector3d[3];
+            foreach ( int tid in mesh.TriangleIndices() ) {
+                mesh.GetTriVertices(tid, ref tri[0], ref tri[1], ref tri[2]);
+                bool ok = true;
+                for ( int j = 0; j < 3; ++j ) {
+                    double d = (tri[j] - plane.Origin).Dot(plane.Z);
+                    if (d < 0)
+                        ok = false;
+                }
+                if (ok)
+                    keep_tris.Add(tid);
+            }
+
+            return keep_tris.GetBuffer();
+        }
+
 	}
 }

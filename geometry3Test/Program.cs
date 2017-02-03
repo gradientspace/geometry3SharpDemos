@@ -32,6 +32,7 @@ namespace geometry3Test
             //test_Remesher.test_remesh_smoothing();
             //test_Remesher.test_remesh_constraints_fixedverts();
             //test_Remesher.test_remesh_constraints_vertcurves();
+            test_Remesher.test_remesh_region();
 
 
             //test_Spatial.test_AABBTree_basic();
@@ -47,7 +48,7 @@ namespace geometry3Test
 
             //test_Deformers.test_LaplacianDeformation();
 
-            test_MeshEdits.test_basic_fills();
+            //test_MeshEdits.test_basic_fills();
 
             System.Console.WriteLine("Done tests, press enter key to exit");
             System.Console.ReadLine();
