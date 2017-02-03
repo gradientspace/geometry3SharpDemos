@@ -74,6 +74,7 @@
     <Compile Include="test_Solvers.cs" />
     <Compile Include="test_MeshGen.cs" />
     <Compile Include="test_MeshIO.cs" />
+    <Compile Include="test_MeshEdits.cs" />
     <Compile Include="test_Spatial.cs" />
     <Compile Include="test_VectorTypes.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

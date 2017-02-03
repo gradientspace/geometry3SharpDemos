@@ -18,6 +18,16 @@ namespace geometry3Test
 
 
 
+        public static void WriteTestOutputMesh(IMesh mesh, string sFilename)
+        {
+            OBJWriter writer = new OBJWriter();
+            var s = new System.IO.StreamWriter(Program.TEST_OUTPUT_PATH + sFilename, false);
+            writer.Write(s, new List<WriteMesh> { new WriteMesh(mesh) }, new WriteOptions() { bWriteGroups = true } );
+			s.Close();
+        }
+
+
+
         public static void WriteDebugMesh(IMesh mesh, string sfilename)
         {
             OBJWriter writer = new OBJWriter();

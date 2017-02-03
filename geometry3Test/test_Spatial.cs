@@ -32,9 +32,11 @@ namespace geometry3Test
                 return TestUtil.LoadTestMesh("c:\\scratch\\test_bunny.stl");
             else if (n == 9)
                 return TestUtil.LoadTestMesh("c:\\scratch\\bunny_solid.obj");
+            else if (n == 10)
+                return TestUtil.LoadTestMesh("c:\\scratch\\scan_upper.stl");
             throw new Exception("test_Spatial.MakeSpatialTestMesh: unknown mesh case");
         }
-        public static int NumTestCases { get { return 10; } }
+        public static int NumTestCases { get { return 11; } }
 
 
 
@@ -102,7 +104,7 @@ namespace geometry3Test
 
 
 
-        public static void test_AABBTree_RayHit(int meshCase = 9)
+        public static void test_AABBTree_RayHit(int meshCase = 10)
         {
             DMesh3 mesh = MakeSpatialTestMesh(meshCase);
             DMeshAABBTree3 tree = new DMeshAABBTree3(mesh);

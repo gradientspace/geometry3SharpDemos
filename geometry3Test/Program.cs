@@ -37,7 +37,7 @@ namespace geometry3Test
             //test_Spatial.test_AABBTree_basic();
             //test_Spatial.test_AABBTree_TriDist();
             //test_Spatial.test_AABBTree_profile();
-            test_Spatial.test_AABBTree_RayHit();
+            //test_Spatial.test_AABBTree_RayHit();
 
             //test_MeshGen.test_basic_generators();
 
@@ -47,6 +47,7 @@ namespace geometry3Test
 
             //test_Deformers.test_LaplacianDeformation();
 
+            test_MeshEdits.test_basic_fills();
 
             System.Console.WriteLine("Done tests, press enter key to exit");
             System.Console.ReadLine();
