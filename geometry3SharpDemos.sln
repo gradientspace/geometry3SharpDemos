@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "g3MeshConvert", "g3MeshConvert\g3MeshConvert.csproj", "{03D79D36-67E3-4A32-AB99-55AB789F8255}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "g3FillTool", "g3FillTool\g3FillTool.csproj", "{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}"
+EndProject
 Global
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
@@ -63,6 +65,18 @@ Global
 		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Release|x64.Build.0 = Release|Any CPU
 		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Release|x86.ActiveCfg = Release|Any CPU
 		{03D79D36-67E3-4A32-AB99-55AB789F8255}.Release|x86.Build.0 = Release|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Debug|x64.Build.0 = Debug|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Debug|x86.Build.0 = Debug|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Release|x64.ActiveCfg = Release|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Release|x64.Build.0 = Release|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Release|x86.ActiveCfg = Release|Any CPU
+		{5141A4C9-210F-4E0D-9E41-3E2DCA7CE11E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

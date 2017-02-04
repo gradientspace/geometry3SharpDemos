@@ -7,3 +7,4 @@ geometry3Test/test_output/
 Performance*.psess
 g3MeshConvert/bin/
 g3MeshConvert/obj/
+g3FillTool/

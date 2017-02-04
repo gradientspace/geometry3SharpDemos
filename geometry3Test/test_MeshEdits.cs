@@ -58,6 +58,7 @@ namespace geometry3Test
                 bool bOK = true;
                 foreach (EdgeLoop loop in loops.Loops) {
                     SimpleHoleFiller filler = new SimpleHoleFiller(mesh, loop);
+                    Debug.Assert(filler.Validate() == ValidationStatus.Ok);
                     bOK = bOK && filler.Fill(1);
                     Debug.Assert(bOK);
                 }
