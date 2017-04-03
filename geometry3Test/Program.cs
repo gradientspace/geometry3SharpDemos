@@ -21,6 +21,8 @@ namespace geometry3Test
         {
 
             //test_VectorTypes.test_rcvector();
+            test_VectorTypes.test_bitarrays();
+
             //test_MeshIO.test_simple_obj();
             //test_Math.test_VectorTanCot();
             //test_Math.test_RayBoxIntersect();
@@ -32,7 +34,7 @@ namespace geometry3Test
             //test_Remesher.test_remesh_smoothing();
             //test_Remesher.test_remesh_constraints_fixedverts();
             //test_Remesher.test_remesh_constraints_vertcurves();
-            test_Remesher.test_remesh_region();
+            //test_Remesher.test_remesh_region();
 
 
             //test_Spatial.test_AABBTree_basic();
