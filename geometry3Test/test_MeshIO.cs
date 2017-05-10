@@ -23,18 +23,21 @@ namespace geometry3Test
 
             System.Console.WriteLine("read complete");
 
-            if (readResult.result != ReadResult.Ok) {
-                System.Console.WriteLine("read failed : " + readResult.info);
+			if (readResult.code != IOCode.Ok) {
+				System.Console.WriteLine("read failed : " + readResult.message);
                 throw new Exception("failed");
             }
 
+			List<WriteMesh> meshes = new List<WriteMesh>();
+			foreach ( IMesh m in builder.Meshes )
+				meshes.Add( new WriteMesh(m) );
             var writeResult = StandardMeshWriter.WriteFile(Program.TEST_OUTPUT_PATH + "temp_write.obj",
-                builder.Meshes.Cast<IMesh>().ToList(), new WriteOptions());
+                meshes, new WriteOptions());
 
             System.Console.WriteLine("write complete");
 
-            if (writeResult.result != WriteResult.Ok) {
-                System.Console.WriteLine("write failed : " + writeResult.info);
+            if (writeResult.code != IOCode.Ok) {
+                System.Console.WriteLine("write failed : " + writeResult.message);
                 throw new Exception("fuck");
             }
         }

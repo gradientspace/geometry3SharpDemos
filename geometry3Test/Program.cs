@@ -23,7 +23,7 @@ namespace geometry3Test
             //test_VectorTypes.test_rcvector();
 			//test_MeshIO.test_simple_obj();
 			//test_Math.test_VectorTanCot();
-
+			//test_Math.test_AngleClamp();
 
 			//test_dmesh();
 
