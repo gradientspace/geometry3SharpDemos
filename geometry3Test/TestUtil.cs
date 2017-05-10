@@ -18,6 +18,16 @@ namespace geometry3Test
 
 
 
+        public static void WriteTestOutputMesh(IMesh mesh, string sFilename)
+        {
+            OBJWriter writer = new OBJWriter();
+            var s = new System.IO.StreamWriter(Program.TEST_OUTPUT_PATH + sFilename, false);
+            writer.Write(s, new List<WriteMesh> { new WriteMesh(mesh) }, new WriteOptions() { bWriteGroups = true } );
+			s.Close();
+        }
+
+
+
         public static void WriteDebugMesh(IMesh mesh, string sfilename)
         {
             OBJWriter writer = new OBJWriter();
@@ -27,6 +37,62 @@ namespace geometry3Test
 			s.Close();
 		}
 
+        public static void WriteDebugMeshes(List<IMesh> meshes, string sfilename)
+        {
+            OBJWriter writer = new OBJWriter();
+            var s = new System.IO.StreamWriter(WRITE_PATH + sfilename, false);
+            List<WriteMesh> wm = new List<WriteMesh>();
+            foreach (var m in meshes)
+                wm.Add(new WriteMesh(m));
+            writer.Write(s, wm, new WriteOptions() { bWriteGroups = true } );
+			s.Close();
+		}
+
+
+        // extension methods for Random
+        public static Vector3d Direction(this Random rand)
+        {
+            Vector3d r = new Vector3d((2 * rand.NextDouble() - 1), 
+                                      (2 * rand.NextDouble() - 1), 
+                                      (2 * rand.NextDouble() - 1));
+            r.Normalize();
+            return r;
+        }
+        public static Vector3d PointInRange(this Random rand, double extent)
+        {
+            Vector3d r = new Vector3d( extent * (2 * rand.NextDouble() - 1), 
+                                      extent * (2 * rand.NextDouble() - 1), 
+                                      extent * (2 * rand.NextDouble() - 1));
+            return r;
+        }
+        public static Vector3d PositivePoint(this Random rand)
+        {
+            return new Vector3d(rand.NextDouble(), rand.NextDouble(), rand.NextDouble());
+        }
+
+
+
+        public static DMesh3 LoadTestMesh(string sPath)
+        {
+            StandardMeshReader reader = new StandardMeshReader();
+            reader.MeshBuilder = new DMesh3Builder();
+            reader.Read(sPath, new ReadOptions());
+            return (reader.MeshBuilder as DMesh3Builder).Meshes[0];
+        }
+
+
+        public static DMesh3 MakeMarker(Vector3d vPos, float fRadius, Colorf color)
+        {
+            DMesh3 markerMesh = new DMesh3(true, true, false);
+            TrivialDiscGenerator gen = new TrivialDiscGenerator() { Slices = 8 };
+            gen.Radius = fRadius;
+            gen.Generate();
+            gen.MakeMesh(markerMesh);
+            foreach (int vid in markerMesh.VertexIndices())
+                markerMesh.SetVertexColor(vid, color);
+            MeshTransforms.Translate(markerMesh, vPos.x, vPos.y, vPos.z);
+            return markerMesh;
+        }
 
         public static DMesh3 MakeTrivialRect()
         {
@@ -104,6 +170,29 @@ namespace geometry3Test
             return mesh;
 		}
 
+
+
+
+
+        public static int[] GetTrisOnPositiveSide(DMesh3 mesh, Frame3f plane)
+        {
+            DVector<int> keep_tris = new DVector<int>();
+
+            Vector3d[] tri = new Vector3d[3];
+            foreach ( int tid in mesh.TriangleIndices() ) {
+                mesh.GetTriVertices(tid, ref tri[0], ref tri[1], ref tri[2]);
+                bool ok = true;
+                for ( int j = 0; j < 3; ++j ) {
+                    double d = (tri[j] - plane.Origin).Dot(plane.Z);
+                    if (d < 0)
+                        ok = false;
+                }
+                if (ok)
+                    keep_tris.Add(tid);
+            }
+
+            return keep_tris.GetBuffer();
+        }
 
 	}
 }

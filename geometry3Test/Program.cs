@@ -24,6 +24,8 @@ namespace geometry3Test
 			//test_MeshIO.test_simple_obj();
 			//test_Math.test_VectorTanCot();
 			//test_Math.test_AngleClamp();
+			//test_Math.test_RayBoxIntersect();
+            //test_VectorTypes.test_bitarrays();
 
 			//test_dmesh();
 
@@ -31,13 +33,24 @@ namespace geometry3Test
             //test_Remesher.test_basic_closed_remesh();
             //test_Remesher.test_remesh_smoothing();
             //test_Remesher.test_remesh_constraints_fixedverts();
-            test_Remesher.test_remesh_constraints_vertcurves();
+            //test_Remesher.test_remesh_constraints_vertcurves();
+            //test_Remesher.test_remesh_region();
 
 
             //test_Spatial.test_AABBTree_basic();
             //test_Spatial.test_AABBTree_TriDist();
             //test_Spatial.test_AABBTree_profile();
+            //test_Spatial.test_AABBTree_RayHit();
 
+            //test_MeshGen.test_basic_generators();
+
+            //test_Solvers.test_Matrices();
+            //test_Solvers.test_SparseCG();
+            //test_Solvers.test_Laplacian();
+
+            //test_Deformers.test_LaplacianDeformation();
+
+            //test_MeshEdits.test_basic_fills();
 
             System.Console.WriteLine("Done tests, press enter key to exit");
             System.Console.ReadLine();

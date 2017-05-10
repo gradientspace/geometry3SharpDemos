@@ -283,5 +283,55 @@ namespace geometry3Test
         }
 
 
+
+
+
+
+
+        public static void test_remesh_region()
+        {
+            int Slices = 16;
+            DMesh3 mesh = TestUtil.MakeCappedCylinder(false, Slices);
+            MeshUtil.ScaleMesh(mesh, Frame3f.Identity, new Vector3f(1, 2, 1));
+            mesh.CheckValidity();
+
+            int[] tris = TestUtil.GetTrisOnPositiveSide(mesh, new Frame3f(Vector3f.Zero, Vector3f.AxisY));
+
+            RegionRemesher r = new RegionRemesher(mesh, tris);
+            r.Region.SubMesh.CheckValidity(true);
+
+            TestUtil.WriteTestOutputMesh(r.Region.SubMesh, "remesh_region_submesh.obj");
+
+            r.Precompute();
+            double fResScale = 0.5f;
+            r.EnableFlips = r.EnableSplits = r.EnableCollapses = true;
+            r.MinEdgeLength = 0.1f * fResScale;
+            r.MaxEdgeLength = 0.2f * fResScale;
+            r.EnableSmoothing = true;
+            r.SmoothSpeedT = 1.0f;
+
+            for (int k = 0; k < 5; ++k) {
+                r.BasicRemeshPass();
+                mesh.CheckValidity();
+            }
+
+            TestUtil.WriteTestOutputMesh(r.Region.SubMesh, "remesh_region_submesh_refined.obj");
+
+            r.BackPropropagate();
+
+            TestUtil.WriteTestOutputMesh(mesh, "remesh_region_submesh_merged_1.obj");
+
+
+            for (int k = 0; k < 5; ++k) {
+                r.BasicRemeshPass();
+                mesh.CheckValidity();
+            }
+
+            r.BackPropropagate();
+
+            TestUtil.WriteTestOutputMesh(mesh, "remesh_region_submesh_merged_2.obj");
+        }
+
+
 	}
 }

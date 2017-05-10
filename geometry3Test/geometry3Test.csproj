@@ -70,7 +70,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="test_DMesh3.cs" />
+    <Compile Include="test_Deformers.cs" />
+    <Compile Include="test_Solvers.cs" />
+    <Compile Include="test_MeshGen.cs" />
     <Compile Include="test_MeshIO.cs" />
+    <Compile Include="test_MeshEdits.cs" />
     <Compile Include="test_Spatial.cs" />
     <Compile Include="test_VectorTypes.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

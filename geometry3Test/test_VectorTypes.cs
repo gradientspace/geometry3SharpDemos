@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,34 @@ namespace geometry3Test
 {
     public class test_VectorTypes
     {
+
+
+        public static void test_bitarrays()
+        {
+            int N = 23154;
+            BitArray bits = new BitArray(N);
+            HBitArray hbits = new HBitArray(N);
+
+            int[] jumps = new int[3] { 3, 1, 17 };
+
+            List<int> values = new List<int>();
+            for ( int i = 0; i < N; i += jumps[i%jumps.Length] ) {
+                bits[i] = true;
+                hbits[i] = true;
+                values.Add(i);
+                Debug.Assert(bits[i] == hbits[i]);
+            }
+
+            int vi = 0;
+            foreach ( int idx in hbits ) {
+                Debug.Assert(idx == values[vi]);
+                vi++;
+            }
+
+
+        }
+
+
 
         public static void test_rcvector()
         {

@@ -68,7 +68,7 @@ namespace geometry3Test
                 while (!bDone) {
                     bDone = true;
                     foreach ( int ti in tmp.TriangleIndices() ) {
-                        if ( tmp.IsTriangle(ti) && tmp.RemoveTriangle(ti, true, true) ) {
+                        if ( tmp.IsTriangle(ti) && tmp.RemoveTriangle(ti, true, true) == MeshResult.Ok ) {
                             bDone = false;
                             tmp.CheckValidity(false);
                         }
@@ -83,7 +83,7 @@ namespace geometry3Test
                     bDone = true;
                     foreach ( int ti in tmp.TriangleIndices() ) {
                         int uset = (ti + 256) % tmp.MaxTriangleID;        // break symmetry
-                        if ( tmp.IsTriangle(uset) && tmp.RemoveTriangle(uset, true, true) ) {
+                        if ( tmp.IsTriangle(uset) && tmp.RemoveTriangle(uset, true, true) == MeshResult.Ok ) {
                             bDone = false;
                             tmp.CheckValidity(false);
                         }
