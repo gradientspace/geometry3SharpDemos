@@ -35,33 +35,34 @@ namespace geometry3Test
 			//test_dmesh();
 
 			test_Remesher.WriteDebugMeshes = true;
-			//test_Remesher.test_basic_closed_remesh();
-			//test_Remesher.test_remesh_smoothing();
-			//test_Remesher.test_remesh_constraints_fixedverts();
-			//test_Remesher.test_remesh_constraints_vertcurves();
-			//test_Remesher.test_remesh_region();
+            //test_Remesher.test_basic_closed_remesh();
+            //test_Remesher.test_remesh_smoothing();
+            //test_Remesher.test_remesh_constraints_fixedverts();
+            //test_Remesher.test_remesh_constraints_vertcurves();
+            //test_Remesher.test_remesh_region();
 
 
-			//test_Spatial.test_AABBTree_basic();
-			//test_Spatial.test_AABBTree_TriDist();
-			//test_Spatial.test_AABBTree_profile();
-			//test_Spatial.test_AABBTree_RayHit();
+            //test_Spatial.test_AABBTree_basic();
+            //test_Spatial.test_AABBTree_TriDist();
+            //test_Spatial.test_AABBTree_profile();
+            //test_Spatial.test_AABBTree_RayHit();
 
-			//test_MeshGen.test_basic_generators();
+            //test_MeshGen.test_basic_generators();
 
-			//test_Solvers.test_Matrices();
-			//test_Solvers.test_SparseCG();
-			//test_Solvers.test_Laplacian();
+            //test_Solvers.test_Matrices();
+            //test_Solvers.test_SparseCG();
+            //test_Solvers.test_Laplacian();
 
-			//test_Deformers.test_LaplacianDeformation();
+            //test_Deformers.test_LaplacianDeformation();
 
-			//test_MeshEdits.test_basic_fills();
-			test_MeshEdits.test_plane_cut();
+            //test_MeshEdits.test_basic_fills();
+            //test_MeshEdits.test_plane_cut();
 
 
             //test_MeshBoundary.test_mesh_boundary();
+            test_MeshRegionBoundary.test_region_boundary();
 
-            test_Debugging.test();
+            //test_Debugging.test();
 
 
             System.Console.WriteLine("Done tests, press enter key to exit");

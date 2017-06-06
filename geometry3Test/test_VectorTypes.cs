@@ -15,26 +15,35 @@ namespace geometry3Test
 
         public static void test_bitarrays()
         {
-            int N = 23154;
-            BitArray bits = new BitArray(N);
-            HBitArray hbits = new HBitArray(N);
+            List<int> testN = new List<int>() { 13, 215, 371, 1212, 23154, 5 * 32, 1024 * 32, 5 * 31, 1024 * 31, 5 * 33, 1024 * 33 };
 
-            int[] jumps = new int[3] { 3, 1, 17 };
+            foreach (int N in testN) {
+                BitArray bits = new BitArray(N);
+                HBitArray hbits = new HBitArray(N);
 
-            List<int> values = new List<int>();
-            for ( int i = 0; i < N; i += jumps[i%jumps.Length] ) {
-                bits[i] = true;
-                hbits[i] = true;
-                values.Add(i);
-                Debug.Assert(bits[i] == hbits[i]);
+                int[] jumps = new int[3] { 3, 1, 17 };
+
+                List<int> values = new List<int>();
+                int set_count = 0;
+                for (int i = 0; i < N; i += jumps[i % jumps.Length]) {
+                    if (bits[i] == false)
+                        set_count++;
+                    bits[i] = true;
+                    hbits[i] = true;
+                    values.Add(i);
+                    Debug.Assert(bits[i] == hbits[i]);
+                }
+                Debug.Assert(hbits.TrueCount == set_count);
+                Debug.Assert(hbits.Count == N);
+
+                // test iteration
+                int vi = 0;
+                foreach (int idx in hbits) {
+                    Debug.Assert(hbits[idx] == bits[idx]);
+                    Debug.Assert(idx == values[vi]);
+                    vi++;
+                }
             }
-
-            int vi = 0;
-            foreach ( int idx in hbits ) {
-                Debug.Assert(idx == values[vi]);
-                vi++;
-            }
-
 
         }
 

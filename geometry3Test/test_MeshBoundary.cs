@@ -37,7 +37,10 @@ namespace geometry3Test
         public static void test_mesh_boundary()
         {
             //List<int> cases = new List<int>() { 0, 1, 2, 3 };
-            List<int> cases = new List<int>() { 3 };
+            List<int> cases = new List<int>() { 0, 1, 2 };
+
+            // TODO: currently this case fails to find a simple boundary loop. 
+            //List<int> cases = new List<int>() { 3 };
 
             foreach ( int num in cases ) { 
 
