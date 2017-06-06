@@ -23,17 +23,16 @@ namespace geometry3Test
 
             System.Console.WriteLine("read complete");
 
-            if (readResult.code != IOCode.Ok) {
-                System.Console.WriteLine("read failed : " + readResult.message);
+			if (readResult.code != IOCode.Ok) {
+				System.Console.WriteLine("read failed : " + readResult.message);
                 throw new Exception("failed");
             }
 
-            List<WriteMesh> outMeshes = new List<WriteMesh>();
-            foreach (DMesh3 m in builder.Meshes)
-                outMeshes.Add(new WriteMesh(m));
-
+			List<WriteMesh> meshes = new List<WriteMesh>();
+			foreach ( IMesh m in builder.Meshes )
+				meshes.Add( new WriteMesh(m) );
             var writeResult = StandardMeshWriter.WriteFile(Program.TEST_OUTPUT_PATH + "temp_write.obj",
-                outMeshes, new WriteOptions());
+                meshes, new WriteOptions());
 
             System.Console.WriteLine("write complete");
 

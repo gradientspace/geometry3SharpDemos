@@ -1,10 +1,94 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using g3;
 
 namespace geometry3Test 
 {
 	public static class test_Math {
+
+		public static double ClampAngleDeg(double theta, double min, double max)
+		{
+			// convert interval to center/extent - [c-e,c+e]
+			double c = (min+max)*0.5;
+			double e = max-c;
+
+			// get rid of extra rotations
+			theta = theta % 360;
+
+			// shift to origin, then convert theta to +- 180
+			theta -= c;
+			if ( theta < -180 )
+				theta += 360;
+			else if ( theta > 180 ) {
+				theta -= 360;
+			}
+
+			// clamp to extent
+			if ( theta < -e )
+				theta = -e;
+			else if ( theta > e )
+				theta = e;
+
+			// shift back
+			return theta + c;
+		}
+
+
+		public static void test_AngleClamp() {
+			List<Vector2d> intervals = new List<Vector2d>();
+			intervals.Add( new Vector2d(0, 90) );
+			intervals.Add( new Vector2d(0, 180) );
+			intervals.Add( new Vector2d(0, 270) );
+			intervals.Add( new Vector2d(0, 350) );
+			intervals.Add( new Vector2d(180, 359) );
+			intervals.Add( new Vector2d(-1, 45) );
+			intervals.Add( new Vector2d(-1, 180) );
+			intervals.Add( new Vector2d(-1, 270) );
+			intervals.Add( new Vector2d(-90, 90) );
+			intervals.Add( new Vector2d(-90, 180) );
+			intervals.Add( new Vector2d(-90, 260) );
+			intervals.Add( new Vector2d(-180, 90) );
+
+			foreach ( Vector2d i in intervals ) {
+				double c = (i.x + i.y) * 0.5;
+				double e = i.y - c;
+
+				double clamped = ClampAngleDeg(c+0.5*e, i.x, i.y);
+				Util.gDevAssert(clamped == c+0.5*e);
+				clamped = ClampAngleDeg(c-0.5*e, i.x, i.y);
+				Util.gDevAssert(clamped == c-0.5*e);
+				clamped = ClampAngleDeg(c, i.x, i.y);
+				Util.gDevAssert(clamped == c);
+
+				
+				clamped = ClampAngleDeg(c+e+1, i.x,i.y);
+				Util.gDevAssert(clamped == i.y);
+				clamped = ClampAngleDeg(c-e-1, i.x, i.y);
+				Util.gDevAssert(clamped == i.x);
+
+				clamped = ClampAngleDeg(c+e+1+360, i.x,i.y);
+				Util.gDevAssert(clamped == i.y);
+				clamped = ClampAngleDeg(c-e-1+360, i.x, i.y);
+				Util.gDevAssert(clamped == i.x);
+
+				clamped = ClampAngleDeg(c+e+1-360, i.x,i.y);
+				Util.gDevAssert(clamped == i.y);
+				clamped = ClampAngleDeg(c-e-1-360, i.x, i.y);
+				Util.gDevAssert(clamped == i.x);
+
+				clamped = ClampAngleDeg(c+e+1+720, i.x,i.y);
+				Util.gDevAssert(clamped == i.y);
+				clamped = ClampAngleDeg(c-e-1+720, i.x, i.y);
+				Util.gDevAssert(clamped == i.x);
+
+				clamped = ClampAngleDeg(c+e+1-720, i.x,i.y);
+				Util.gDevAssert(clamped == i.y);
+				clamped = ClampAngleDeg(c-e-1-720, i.x, i.y);
+				Util.gDevAssert(clamped == i.x);
+			}
+		}
+
 
 		// compare vector-cot and vector-tan to regular cot/tan
 		public static void test_VectorTanCot() {

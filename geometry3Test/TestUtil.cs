@@ -32,7 +32,8 @@ namespace geometry3Test
         {
             OBJWriter writer = new OBJWriter();
             var s = new System.IO.StreamWriter(WRITE_PATH + sfilename, false);
-            writer.Write(s, new List<WriteMesh> { new WriteMesh(mesh) }, new WriteOptions() { bWriteGroups = true } );
+			List<WriteMesh> meshes = new List<WriteMesh>() { new WriteMesh(mesh) };
+            writer.Write(s, meshes, new WriteOptions() { bWriteGroups = true } );
 			s.Close();
 		}
 
