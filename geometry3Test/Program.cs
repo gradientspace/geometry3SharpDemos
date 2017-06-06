@@ -21,7 +21,7 @@ namespace geometry3Test
         {
 
             //test_VectorTypes.test_rcvector();
-            test_VectorTypes.test_bitarrays();
+            //test_VectorTypes.test_bitarrays();
 
             //test_MeshIO.test_simple_obj();
             //test_Math.test_VectorTanCot();
@@ -51,6 +51,12 @@ namespace geometry3Test
             //test_Deformers.test_LaplacianDeformation();
 
             //test_MeshEdits.test_basic_fills();
+
+
+            //test_MeshBoundary.test_mesh_boundary();
+
+            test_Debugging.test();
+
 
             System.Console.WriteLine("Done tests, press enter key to exit");
             System.Console.ReadLine();

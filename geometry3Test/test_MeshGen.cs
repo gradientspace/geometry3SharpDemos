@@ -39,6 +39,13 @@ namespace geometry3Test
             //box_gen.NoSharedVertices = true;
             box_gen.Generate();
             WriteGeneratedMesh(box_gen, "__g3Test_trivial_box.obj");
+
+
+
+            RoundRectGenerator roundrect_gen = new RoundRectGenerator();
+            roundrect_gen.Width = 2;
+            roundrect_gen.Generate();
+            WriteGeneratedMesh(roundrect_gen, "__g3Test_round_rect.obj");
         }
     }
 }
