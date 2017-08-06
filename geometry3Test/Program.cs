@@ -48,7 +48,7 @@ namespace geometry3Test
             //test_Spatial.test_AABBTree_RayHit();
 
             //test_MeshGen.test_basic_generators();
-            test_MeshGen.test_mesh_builders();
+            //test_MeshGen.test_mesh_builders();
 
             //test_Solvers.test_Matrices();
             //test_Solvers.test_SparseCG();
@@ -62,6 +62,8 @@ namespace geometry3Test
 
             //test_MeshBoundary.test_mesh_boundary();
             //test_MeshRegionBoundary.test_region_boundary();
+
+            test_Grids.test_levelset_basic();
 
             //test_Debugging.test();
 
