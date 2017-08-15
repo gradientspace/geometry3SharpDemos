@@ -35,11 +35,14 @@ namespace geometry3Test
 			//test_dmesh();
 
 			test_Remesher.WriteDebugMeshes = true;
-            //test_Remesher.test_basic_closed_remesh();
-            //test_Remesher.test_remesh_smoothing();
-            //test_Remesher.test_remesh_constraints_fixedverts();
-            //test_Remesher.test_remesh_constraints_vertcurves();
-            //test_Remesher.test_remesh_region();
+			//test_Remesher.test_basic_closed_remesh();
+			//test_Remesher.test_remesh_smoothing();
+			//test_Remesher.test_remesh_constraints_fixedverts();
+			//test_Remesher.test_remesh_constraints_vertcurves();
+			//test_Remesher.test_remesh_region();
+
+			test_Reducer.test_basic_closed_reduce();
+			test_Reducer.test_reduce_constraints_fixedverts();
 
 
             //test_Spatial.test_AABBTree_basic();
@@ -63,7 +66,7 @@ namespace geometry3Test
             //test_MeshBoundary.test_mesh_boundary();
             //test_MeshRegionBoundary.test_region_boundary();
 
-            test_Grids.test_levelset_basic();
+            //test_Grids.test_levelset_basic();
 
             //test_Debugging.test();
 

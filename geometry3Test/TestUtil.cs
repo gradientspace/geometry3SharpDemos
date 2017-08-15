@@ -80,6 +80,15 @@ namespace geometry3Test
             return (reader.MeshBuilder as DMesh3Builder).Meshes[0];
         }
 
+		public static DMesh3 LoadTestInputMesh(string sPath)
+		{
+			StandardMeshReader reader = new StandardMeshReader();
+			reader.MeshBuilder = new DMesh3Builder();
+			reader.Read(Program.TEST_FILES_PATH + sPath, new ReadOptions());
+			return (reader.MeshBuilder as DMesh3Builder).Meshes[0];
+		}
+
+
 
         public static DMesh3 MakeMarker(Vector3d vPos, float fRadius, Colorf color)
         {
