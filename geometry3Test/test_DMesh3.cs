@@ -266,5 +266,86 @@ namespace geometry3Test
 				Util.gDevAssert( mesh.edge_is_boundary(eid) == false );
 		}
 
+
+
+
+
+
+
+		public static void merge_test_closed_mesh()
+		{
+			DMesh3 mesh = TestUtil.MakeCappedCylinder(true, 4);
+			mesh.CheckValidity();
+
+			DMesh3.MergeEdgesInfo info;
+
+			int merges = 0;
+			while (true) {
+				List<int> be = new List<int>(mesh.BoundaryEdgeIndices());
+				if (be.Count == 0)
+					break;
+				int ea = be[0];
+				int eo = find_pair_edge(mesh, ea, be);
+				if (eo != DMesh3.InvalidID) {
+					var result = mesh.MergeEdges(ea, eo, out info);
+					Util.gDevAssert(result == MeshResult.Ok);
+					TestUtil.WriteTestOutputMesh(mesh, "after_last_merge.obj");
+					mesh.CheckValidity();
+					merges++;
+				}
+			}
+			mesh.CheckValidity();
+
+
+			DMesh3 originalMesh = TestUtil.LoadTestInputMesh("three_edge_crack.obj");
+			List<int> bdryedges = new List<int>(originalMesh.BoundaryEdgeIndices());
+			for (int k = 0; k < bdryedges.Count; ++k) {
+				DMesh3 copyMesh = new DMesh3(originalMesh);
+				List<int> be = new List<int>(copyMesh.BoundaryEdgeIndices());
+				int ea = be[k];
+				int eo = find_pair_edge(copyMesh, ea, be);
+				if (eo != DMesh3.InvalidID) {
+					var result = copyMesh.MergeEdges(ea, eo, out info);
+					Util.gDevAssert(result == MeshResult.Ok);
+					if ( k == 3 )
+						TestUtil.WriteTestOutputMesh(copyMesh, "after_last_merge.obj");
+					mesh.CheckValidity();
+				}
+			}
+
+			// this should fail at every edge because it would create bad-orientation edges
+			DMesh3 dupeMesh = TestUtil.LoadTestInputMesh("duplicate_4tris.obj");
+			List<int> dupeBE = new List<int>(dupeMesh.BoundaryEdgeIndices());
+			for (int k = 0; k < dupeBE.Count; ++k) {
+				int ea = dupeBE[k];
+				int eo = find_pair_edge(dupeMesh, ea, dupeBE);
+				if (eo != DMesh3.InvalidID) {
+					var result = dupeMesh.MergeEdges(ea, eo, out info);
+					Util.gDevAssert(result == MeshResult.Failed_SameOrientation);
+					mesh.CheckValidity();
+					TestUtil.WriteTestOutputMesh(dupeMesh, "after_last_merge.obj");
+				}
+			}
+		}
+
+
+
+		static int find_pair_edge(DMesh3 mesh, int eid, List<int> candidates) {
+			Index2i ev = mesh.GetEdgeV(eid);
+			Vector3d a = mesh.GetVertex(ev.a), b = mesh.GetVertex(ev.b);
+			double eps = 100 * MathUtil.Epsilonf;
+			foreach (int eother in candidates ) {
+				if (eother == eid)
+					continue;
+				Index2i ov = mesh.GetEdgeV(eother);
+				Vector3d c = mesh.GetVertex(ov.a), d = mesh.GetVertex(ov.b);
+				if ((a.EpsilonEqual(c, eps) && b.EpsilonEqual(d, eps)) ||
+				    (b.EpsilonEqual(c, eps) && a.EpsilonEqual(d, eps)))
+					return eother;
+			};
+			return DMesh3.InvalidID;
+		}
+
+
     }
 }

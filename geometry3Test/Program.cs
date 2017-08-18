@@ -24,15 +24,16 @@ namespace geometry3Test
         static void Main()
         {
 
-            //test_VectorTypes.test_rcvector();
-            //test_VectorTypes.test_bitarrays();
-            //test_MeshIO.test_simple_obj();
-            //test_Math.test_VectorTanCot();
+			//test_VectorTypes.test_rcvector();
+			//test_VectorTypes.test_bitarrays();
+			//test_MeshIO.test_simple_obj();
+			//test_Math.test_VectorTanCot();
 			//test_Math.test_AngleClamp();
-            //test_Math.test_RayBoxIntersect();
+			//test_Math.test_RayBoxIntersect();
 
 
 			//test_dmesh();
+			test_DMesh3.merge_test_closed_mesh();
 
 			test_Remesher.WriteDebugMeshes = true;
 			//test_Remesher.test_basic_closed_remesh();
@@ -41,8 +42,8 @@ namespace geometry3Test
 			//test_Remesher.test_remesh_constraints_vertcurves();
 			//test_Remesher.test_remesh_region();
 
-			test_Reducer.test_basic_closed_reduce();
-			test_Reducer.test_reduce_constraints_fixedverts();
+			//test_Reducer.test_basic_closed_reduce();
+			//test_Reducer.test_reduce_constraints_fixedverts();
 
 
             //test_Spatial.test_AABBTree_basic();
