@@ -33,7 +33,7 @@ namespace geometry3Test
 
 
 			//test_dmesh();
-			test_DMesh3.merge_test_closed_mesh();
+			//test_DMesh3.merge_test_closed_mesh();
 
 			test_Remesher.WriteDebugMeshes = true;
 			//test_Remesher.test_basic_closed_remesh();
@@ -44,7 +44,7 @@ namespace geometry3Test
 
 			//test_Reducer.test_basic_closed_reduce();
 			//test_Reducer.test_reduce_constraints_fixedverts();
-
+            test_Reducer.test_reduce_profiling();
 
             //test_Spatial.test_AABBTree_basic();
             //test_Spatial.test_AABBTree_TriDist();
