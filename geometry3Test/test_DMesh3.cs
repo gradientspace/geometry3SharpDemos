@@ -260,6 +260,7 @@ namespace geometry3Test
 			DMesh3 mesh = TestUtil.MakeCappedCylinder(false);
 			mesh.CheckValidity();
 			collapse_to_convergence(mesh);
+            mesh.CheckValidity();
 			Util.gDevAssert( mesh.TriangleCount == 4 );
 			Util.gDevAssert( mesh.VertexCount == 4 );
 			foreach ( int eid in mesh.EdgeIndices() )
