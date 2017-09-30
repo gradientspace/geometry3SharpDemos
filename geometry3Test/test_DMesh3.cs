@@ -329,8 +329,6 @@ namespace geometry3Test
 			}
 		}
 
-
-
 		static int find_pair_edge(DMesh3 mesh, int eid, List<int> candidates) {
 			Index2i ev = mesh.GetEdgeV(eid);
 			Vector3d a = mesh.GetVertex(ev.a), b = mesh.GetVertex(ev.b);
@@ -346,6 +344,53 @@ namespace geometry3Test
 			};
 			return DMesh3.InvalidID;
 		}
+
+
+
+
+
+
+
+
+
+
+        public static void poke_test()
+        {
+            DMesh3 mesh = TestUtil.LoadTestInputMesh("plane_250v.obj");
+            //DMesh3 mesh = TestUtil.LoadTestInputMesh("sphere_bowtie_groups.obj");
+            mesh.CheckValidity();
+
+
+            int NT = mesh.TriangleCount;
+            for ( int i = 0; i < NT; i += 5 ) {
+                Vector3d n = mesh.GetTriNormal(i);
+                DMesh3.PokeTriangleInfo pokeinfo;
+                MeshResult result = mesh.PokeTriangle(i, out pokeinfo);
+
+                Vector3d v = mesh.GetVertex(pokeinfo.new_vid);
+                v += 0.25f * n;
+                mesh.SetVertex(pokeinfo.new_vid, v);
+
+                mesh.CheckValidity();
+            }
+
+            //TestUtil.WriteTestOutputMesh(mesh, "poke_test_result.obj");
+
+        }
+
+
+
+
+
+        public static void set_triangle_tests()
+        {
+            DMesh3 mesh = TestUtil.LoadTestInputMesh("plane_250v.obj");
+            mesh.CheckValidity();
+
+            // ok todo
+
+
+        }
 
 
     }

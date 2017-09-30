@@ -9,3 +9,4 @@ Performance*.psess
 g3MeshConvert/bin/
 g3MeshConvert/obj/
 g3FillTool/
+.vs/

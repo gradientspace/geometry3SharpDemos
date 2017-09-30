@@ -97,26 +97,63 @@ namespace geometry3Test
         
 
 		public static void test_reduce_profiling() {
+
+
             LocalProfiler p = new LocalProfiler();
 
-            p.Start("load"); 
-            DMesh3 mesh = TestUtil.LoadTestMesh("c:\\scratch\\reduce_test.stl");
+            p.Start("load");
+            //DMesh3 mesh = TestUtil.LoadTestMesh("c:\\scratch\\bunny_solid.obj");
+            //DMesh3 mesh = TestUtil.LoadTestMesh("C:\\scratch\\current_test\\g3sharp_user_OBJ\\OBJ\\dizhi.obj");
+            //DMesh3 mesh = TestUtil.LoadTestMesh("C:\\scratch\\current_test\\g3sharp_user_OBJ\\exported.obj");
+            //DMesh3 mesh = TestUtil.LoadTestMesh("c:\\scratch\\bunny_open.obj");
+            DMesh3 loadMesh = TestUtil.LoadTestMesh("c:\\scratch\\ZentrigDoo_Hires_Upper.stl");
             System.Console.WriteLine("Loaded...");
 
             p.StopAllAndStartNew("check");
-			mesh.CheckValidity();
+			//mesh.CheckValidity();
             System.Console.WriteLine("Checked...");
 
-            int N = 100000;
-            System.Console.WriteLine("Reducing from {0} to {1}...", mesh.TriangleCount, N);
-            p.StopAllAndStartNew("reduce"); 
-			Reducer r = new Reducer(mesh);
-            //r.MinimizeQuadricPositionError = false;
-            r.ENABLE_PROFILING = true;
-			r.ReduceToTriangleCount(N);
-            System.Console.WriteLine("Reduced...");
 
-            System.Console.WriteLine(p.AllTimes());
+            double time_ticks = 0;
+            int Niters = 10;
+
+            DMesh3 mesh = null;
+            for (int k = 0; k < Niters; ++k) {
+
+                mesh = new DMesh3(loadMesh);
+
+                int N = 100000;
+                System.Console.WriteLine("Reducing from {0} to {1}...", mesh.TriangleCount, N);
+                BlockTimer reduceT = p.StopAllAndStartNew("reduce");
+                Reducer r = new Reducer(mesh);
+                //r.MinimizeQuadricPositionError = false;
+                r.ENABLE_PROFILING = true;
+
+                //DMeshAABBTree3 tree = new DMeshAABBTree3(new DMesh3(mesh));
+                //tree.Build();
+                //MeshProjectionTarget target = new MeshProjectionTarget(tree.Mesh, tree);
+                //r.SetProjectionTarget(target);
+                //r.ProjectionMode = Reducer.TargetProjectionMode.Inline;
+
+                //r.SetExternalConstraints(new MeshConstraints());
+                ////MeshConstraintUtil.PreserveBoundaryLoops(r.Constraints, mesh);
+                //MeshConstraintUtil.FixAllBoundaryEdges(r.Constraints, mesh);
+
+                r.ReduceToTriangleCount(N);
+                //double min, max, avg;
+                //MeshQueries.EdgeLengthStats(mesh, out min, out max, out avg);
+                //r.ReduceToEdgeLength(avg * 1.5);
+                //System.Console.WriteLine("Reduced...");
+
+                p.Stop("reduce");
+                time_ticks += reduceT.Watch.Elapsed.Ticks;
+                System.Console.WriteLine(p.AllTimes());
+                GC.Collect();
+            }
+
+
+            TimeSpan total = new TimeSpan((int)(time_ticks / (double)Niters));
+            System.Console.WriteLine("AVERAGE: {0}", string.Format("{0:ss}.{0:ffffff}", total));
 
             TestUtil.WriteDebugMesh(mesh, "__REDUCED.obj");
 		}

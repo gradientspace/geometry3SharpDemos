@@ -18,33 +18,44 @@ namespace geometry3Test
 
 
 
-        public static void WriteTestOutputMesh(IMesh mesh, string sFilename)
+        public static void WriteTestOutputMesh(IMesh mesh, string sFilename, bool write_groups = true, bool write_vtxcolors = false, bool write_vtxuv = false)
         {
             OBJWriter writer = new OBJWriter();
             var s = new System.IO.StreamWriter(Program.TEST_OUTPUT_PATH + sFilename, false);
-            writer.Write(s, new List<WriteMesh> { new WriteMesh(mesh) }, new WriteOptions() { bWriteGroups = true } );
+            writer.Write(s, new List<WriteMesh> { new WriteMesh(mesh) }, 
+                new WriteOptions() { bWriteGroups = write_groups, bPerVertexColors = write_vtxcolors, bPerVertexUVs = write_vtxuv } );
 			s.Close();
+        }
+        public static void WriteTestOutputMeshes(List<IMesh> meshes, string sFilename, bool write_groups = true, bool write_vtxcolors = false, bool write_vtxuv = false)
+        {
+            OBJWriter writer = new OBJWriter();
+            var s = new System.IO.StreamWriter(Program.TEST_OUTPUT_PATH + sFilename, false);
+            List<WriteMesh> wm = new List<WriteMesh>();
+            foreach (var m in meshes)
+                wm.Add(new WriteMesh(m));
+            WriteOptions opt = new WriteOptions() { bCombineMeshes = false, bWriteGroups = write_groups, bPerVertexColors = write_vtxcolors, bPerVertexUVs = write_vtxuv };
+            writer.Write(s, wm, opt );
+            s.Close();
         }
 
 
-
-        public static void WriteDebugMesh(IMesh mesh, string sfilename)
+        public static void WriteDebugMesh(IMesh mesh, string sfilename, bool write_groups = true, bool write_vtxcolors = false, bool write_vtxuv = false)
         {
             OBJWriter writer = new OBJWriter();
             var s = new System.IO.StreamWriter(WRITE_PATH + sfilename, false);
 			List<WriteMesh> meshes = new List<WriteMesh>() { new WriteMesh(mesh) };
-            writer.Write(s, meshes, new WriteOptions() { bWriteGroups = true } );
+            writer.Write(s, meshes, new WriteOptions() { bWriteGroups = write_groups, bPerVertexColors = write_vtxcolors, bPerVertexUVs = write_vtxuv } );
 			s.Close();
 		}
 
-        public static void WriteDebugMeshes(List<IMesh> meshes, string sfilename)
+        public static void WriteDebugMeshes(List<IMesh> meshes, string sfilename, bool write_groups = true, bool write_vtxcolors = false, bool write_vtxuv = false)
         {
             OBJWriter writer = new OBJWriter();
             var s = new System.IO.StreamWriter(WRITE_PATH + sfilename, false);
             List<WriteMesh> wm = new List<WriteMesh>();
             foreach (var m in meshes)
                 wm.Add(new WriteMesh(m));
-            writer.Write(s, wm, new WriteOptions() { bWriteGroups = true } );
+            writer.Write(s, wm, new WriteOptions() { bCombineMeshes = false, bWriteGroups = write_groups, bPerVertexColors = write_vtxcolors, bPerVertexUVs = write_vtxuv } );
 			s.Close();
 		}
 
@@ -202,6 +213,21 @@ namespace geometry3Test
 
             return keep_tris.GetBuffer();
         }
+
+
+
+
+        public static void SetColorsFromScalarF(DMesh3 mesh, Func<int,float> ScalarF, Vector2f scaleRange)
+        {
+            mesh.EnableVertexColors(Vector3f.Zero);
+
+            foreach (int vid in mesh.VertexIndices()) {
+                float f = ScalarF(vid);
+                float t = (f - scaleRange[0]) / (scaleRange[1] - scaleRange[0]);
+                mesh.SetVertexColor(vid, t * Vector3f.One);
+            }
+        }
+
 
 	}
 }

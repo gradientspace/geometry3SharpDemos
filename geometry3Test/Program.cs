@@ -24,27 +24,29 @@ namespace geometry3Test
         static void Main()
         {
 
-			//test_VectorTypes.test_rcvector();
-			//test_VectorTypes.test_bitarrays();
-			//test_MeshIO.test_simple_obj();
-			//test_Math.test_VectorTanCot();
-			//test_Math.test_AngleClamp();
-			//test_Math.test_RayBoxIntersect();
+            //test_VectorTypes.test_rcvector();
+            //test_VectorTypes.test_bitarrays();
+            //test_MeshIO.test_simple_obj();
+            //test_Math.test_VectorTanCot();
+            //test_Math.test_AngleClamp();
+            //test_Math.test_RayBoxIntersect();
 
+            //test_VectorTypes.test_pq();
+            //test_VectorTypes.profile_pq();
 
-			//test_dmesh();
-			//test_DMesh3.merge_test_closed_mesh();
+            //test_dmesh();
+            //test_DMesh3.merge_test_closed_mesh();
 
-			test_Remesher.WriteDebugMeshes = true;
-			//test_Remesher.test_basic_closed_remesh();
-			//test_Remesher.test_remesh_smoothing();
-			//test_Remesher.test_remesh_constraints_fixedverts();
-			//test_Remesher.test_remesh_constraints_vertcurves();
-			//test_Remesher.test_remesh_region();
+            test_Remesher.WriteDebugMeshes = true;
+            //test_Remesher.test_basic_closed_remesh();
+            //test_Remesher.test_remesh_smoothing();
+            //test_Remesher.test_remesh_constraints_fixedverts();
+            //test_Remesher.test_remesh_constraints_vertcurves();
+            //test_Remesher.test_remesh_region();
 
-			//test_Reducer.test_basic_closed_reduce();
-			//test_Reducer.test_reduce_constraints_fixedverts();
-            test_Reducer.test_reduce_profiling();
+            //test_Reducer.test_basic_closed_reduce();
+            //test_Reducer.test_reduce_constraints_fixedverts();
+            //test_Reducer.test_reduce_profiling();
 
             //test_Spatial.test_AABBTree_basic();
             //test_Spatial.test_AABBTree_TriDist();
@@ -61,6 +63,9 @@ namespace geometry3Test
             //test_Deformers.test_LaplacianDeformation();
 
             //test_MeshEdits.test_basic_fills();
+
+
+            // THIS FAILS!!!
             //test_MeshEdits.test_plane_cut();
 
 
@@ -69,6 +74,13 @@ namespace geometry3Test
 
             //test_Grids.test_levelset_basic();
 
+            //test_Dijkstra.test_dijkstra();
+            //test_Dijkstra.profile_dijkstra_2b(500);
+            //test_Dijkstra.profile_dijkstra_2b_reuse(500);
+
+            //test_Dijkstra.test_local_param();
+            //test_Dijkstra.test_uv_insert_segment();
+            //test_Dijkstra.test_uv_insert_string();
             //test_Debugging.test();
 
 
@@ -97,7 +109,10 @@ namespace geometry3Test
 			test_DMesh3.collapse_test_convergence_cyl_noshared();
 			test_DMesh3.collapse_test_closed_mesh();
 			test_DMesh3.collapse_test_convergence_opencyl();
-		}
+
+            test_DMesh3.poke_test();
+
+        }
 
     }
 }
