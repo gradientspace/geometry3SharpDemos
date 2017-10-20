@@ -22,8 +22,11 @@ namespace geometry3Test
 			} else if (n == 2) {
 				name = "bunny_bowties";
 				return TestUtil.LoadTestMesh(Program.TEST_FILES_PATH + "bunny_bowties.obj");
-			}
-			throw new Exception("test_Spatial.MakeEditTestMesh: unknown mesh case");
+            } else if (n == 3) {
+                name = "open_sheets";
+                return TestUtil.LoadTestMesh(Program.TEST_FILES_PATH + "open_sheets.obj");
+            }
+            throw new Exception("test_Spatial.MakeEditTestMesh: unknown mesh case");
 		}
 		public static int NumTestCases { get { return 1; } }
 
@@ -75,7 +78,7 @@ namespace geometry3Test
 
 		public static void test_plane_cut()
 		{
-			List<int> tests = new List<int>() { 2 };
+			List<int> tests = new List<int>() { 1 };
 
 			bool DO_EXHAUSTIVE_TESTS = false;
 
@@ -90,15 +93,22 @@ namespace geometry3Test
 				MeshPlaneCut cut = new MeshPlaneCut(mesh, bounds.Center, Vector3d.AxisY);
 				Debug.Assert(cut.Validate() == ValidationStatus.Ok);
 				bool bCutOK = cut.Cut();
-				bool bFillOK = cut.FillHoles(-1);
 
-				System.Console.WriteLine("cut: {0}  fill:D {1}", 
-				                         ((bCutOK) ? "Ok" : "Failed"), ((bFillOK) ? "Ok" : "Failed"));
+                System.Console.Write("cut: {0}   loops: {1}  spans: {2}", ((bCutOK) ? "Ok" : "Failed"),
+                    cut.CutLoops.Count, cut.CutSpans.Count);
+
+                foreach (var loop in cut.CutLoops)
+                    loop.CheckValidity(FailMode.gDevAssert);
+                foreach (var span in cut.CutSpans)
+                    span.CheckValidity(FailMode.gDevAssert);
+
+                bool bFillOK = cut.FillHoles(-1);
+                System.Console.WriteLine("   fill: {0}", ((bFillOK) ? "Ok" : "Failed"));
 
 				TestUtil.WriteTestOutputMesh(mesh, name + "_cut" + ".obj");
 
 
-				if (DO_EXHAUSTIVE_TESTS == false)
+				if (DO_EXHAUSTIVE_TESTS == true)
 					continue;
 
 
@@ -111,7 +121,7 @@ namespace geometry3Test
 						System.Console.WriteLine("{0} / {1}", vid, orig_mesh.MaxVertexID);
 					Vector3d v = orig_mesh.GetVertex(vid);
 					mesh = new DMesh3(orig_mesh);
-					cut = new MeshPlaneCut(mesh, bounds.Center, Vector3d.AxisY);
+					cut = new MeshPlaneCut(mesh, v, Vector3d.AxisY);
 					bCutOK = cut.Cut();
 					Debug.Assert(bCutOK);
 				}
