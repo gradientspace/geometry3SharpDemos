@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using g3;
 
 
@@ -15,6 +16,11 @@ namespace geometry3Test
                     return "c:\\scratch\\";
             }
         }
+
+
+		public static string GetTestOutputPath(string filename) {
+			return Path.Combine(Program.TEST_OUTPUT_PATH + filename);
+		}
 
 
 

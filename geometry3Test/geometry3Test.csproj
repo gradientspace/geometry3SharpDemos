@@ -105,6 +105,7 @@
     <Compile Include="TestUtil.cs" />
     <Compile Include="test_Math.cs" />
     <Compile Include="test_Reducer.cs" />
+    <Compile Include="test_Polygon.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
