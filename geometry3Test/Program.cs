@@ -65,7 +65,6 @@ namespace geometry3Test
             //test_MeshEdits.test_basic_fills();
 
 
-            // THIS FAILS!!!
             //test_MeshEdits.test_plane_cut();
 
 
