@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using g3;
 
 namespace geometry3Test
@@ -24,5 +25,31 @@ namespace geometry3Test
 
 			writer.Write(TestUtil.GetTestOutputPath("test.svg"));
 		}
+
+
+
+		public static void test_tiling()
+		{
+			Vector2d origin = Vector2d.Zero;
+			double radius = 125;
+			Circle2d circ = new Circle2d(origin, radius);
+			AxisAlignedBox2d packBounds = new AxisAlignedBox2d(0, 0, 800, 400);
+			double spacing = 0;
+
+			Polygon2d boundsPoly = new Polygon2d();
+			for (int i = 0; i < 4; ++i)
+				boundsPoly.AppendVertex(packBounds.GetCorner(i));
+
+			List<Vector2d> packed = TilingUtil.BoundedRegularTiling2(circ.Bounds, packBounds, spacing);
+
+			SVGWriter writer = new SVGWriter();
+			foreach (Vector2d t in packed) {
+				writer.AddCircle(new Circle2d(origin + t, radius), SVGWriter.Style.Outline("black", 1.0f));
+			}
+			writer.AddPolygon(boundsPoly, SVGWriter.Style.Outline("red", 2.0f));
+			writer.Write(TestUtil.GetTestOutputPath("test.svg"));
+		}
+
+
 	}
 }
