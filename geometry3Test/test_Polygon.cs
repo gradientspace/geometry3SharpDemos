@@ -31,16 +31,21 @@ namespace geometry3Test
 		public static void test_tiling()
 		{
 			Vector2d origin = Vector2d.Zero;
-			double radius = 125;
+			double radius = 22;
 			Circle2d circ = new Circle2d(origin, radius);
-			AxisAlignedBox2d packBounds = new AxisAlignedBox2d(0, 0, 800, 400);
-			double spacing = 0;
+			AxisAlignedBox2d elemBounds = circ.Bounds;
+			//elemBounds.Max.x += radius / 2;
 
+			AxisAlignedBox2d packBounds = new AxisAlignedBox2d(0, 0, 800, 400);
+			double spacing = 5;
 			Polygon2d boundsPoly = new Polygon2d();
 			for (int i = 0; i < 4; ++i)
 				boundsPoly.AppendVertex(packBounds.GetCorner(i));
 
-			List<Vector2d> packed = TilingUtil.BoundedRegularTiling2(circ.Bounds, packBounds, spacing);
+			//List<Vector2d> packed = TilingUtil.BoundedRegularTiling2(elemBounds, packBounds, spacing);
+			List<Vector2d> packed = TilingUtil.BoundedCircleTiling2(elemBounds, packBounds, spacing);
+
+			System.Console.WriteLine("packed {0}", packed.Count);
 
 			SVGWriter writer = new SVGWriter();
 			foreach (Vector2d t in packed) {
