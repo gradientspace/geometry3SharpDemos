@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using g3;
 
 namespace geometry3Test
@@ -56,5 +57,55 @@ namespace geometry3Test
 		}
 
 
-	}
+
+
+
+
+        public static void test_convex_hull()
+        {
+            Random r = new Random(31337);
+
+            //LocalProfiler p = new LocalProfiler();
+            //p.Start("Hulls");
+
+            QueryNumberType[] modes = new QueryNumberType[] { QueryNumberType.QT_DOUBLE, QueryNumberType.QT_INT64 };
+
+            foreach (var queryMode in modes) {
+
+                for (int k = 0; k < 1000; ++k) {
+
+                    int N = 2500;
+                    double scale = (r.NextDouble() + 0.1) * 1024.0;
+
+                    Vector2d[] pts = TestUtil.RandomPoints(N, r, Vector2d.Zero, scale);
+
+                    double eps = MathUtil.Epsilonf;
+
+                    ConvexHull2 hull = new ConvexHull2(pts, eps, queryMode);
+                    Polygon2d hullPoly = hull.GetHullPolygon();
+
+                    foreach (Vector2d v in pts) {
+                        if (hullPoly.Contains(v))
+                            continue;
+                        double d = hullPoly.DistanceSquared(v);
+                        if (d < eps)
+                            continue;
+                        System.Console.WriteLine("test_convex_hull: Point {0} not contained!", v);
+                    }
+                }
+            }
+
+            //p.StopAll();
+            //System.Console.WriteLine(p.AllTimes());
+
+            //SVGWriter writer = new SVGWriter();
+            //foreach (Vector2d v in pts) { 
+            //    writer.AddCircle(new Circle2d(v, 3.0), SVGWriter.Style.Outline("black", 1.0f));
+            //}
+            //writer.AddPolygon(hullPoly, SVGWriter.Style.Outline("red", 2.0f));
+            //writer.Write(TestUtil.GetTestOutputPath("test.svg"));
+        }
+
+
+    }
 }

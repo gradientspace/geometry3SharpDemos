@@ -235,5 +235,22 @@ namespace geometry3Test
         }
 
 
+
+
+
+
+
+
+
+        public static Vector2d[] RandomPoints(int Count, Random r, Vector2d center, double scale = 1.0)
+        {
+            Vector2d[] v = new Vector2d[Count];
+            for (int k = 0; k < Count; ++k)
+                v[k] = new Vector2d(scale * r.NextDouble(), scale * r.NextDouble()) + center;
+            return v;
+        }
+
+
+
 	}
 }

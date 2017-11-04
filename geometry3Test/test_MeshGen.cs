@@ -79,5 +79,34 @@ namespace geometry3Test
            
 
         }
+
+
+
+
+
+        public static void test_marching_cubes()
+        {
+            MarchingCubes c = new MarchingCubes();
+
+            LocalProfiler profiler = new LocalProfiler();
+            profiler.Start("Generate");
+
+            c.ParallelCompute = true;
+            c.Generate();
+
+            profiler.Stop("Generate");
+
+            System.Console.WriteLine("Tris: {0} Times: {1}", c.Mesh.TriangleCount, profiler.AllTimes());
+
+            Reducer r = new Reducer(c.Mesh);
+            r.ReduceToEdgeLength(c.CubeSize * 0.25);
+
+            System.Console.WriteLine("after reduce: {0}", c.Mesh.TriangleCount);
+
+            MeshNormals.QuickCompute(c.Mesh);
+            TestUtil.WriteTestOutputMesh(c.Mesh, "marching_cubes.obj");
+
+        }
+
     }
 }
