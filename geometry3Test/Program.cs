@@ -85,7 +85,8 @@ namespace geometry3Test
 
             //test_Polygon.test_svg();
             //test_Polygon.test_tiling();
-            test_Polygon.test_convex_hull();
+            //test_Polygon.test_convex_hull_2();
+            test_Polygon.test_min_box_2();
 
             System.Console.WriteLine("Done tests, press enter key to exit");
             System.Console.ReadLine();

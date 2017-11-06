@@ -250,7 +250,14 @@ namespace geometry3Test
             return v;
         }
 
+        public static double[] RandomScalars(int Count, Random r, Interval1d range)
+        {
+            double[] v = new double[Count];
+            for (int k = 0; k < Count; ++k) {
+                v[k] = range.a + r.NextDouble() * range.Length;
+            }
+            return v;
+        }
 
-
-	}
+    }
 }

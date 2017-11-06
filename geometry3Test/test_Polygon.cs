@@ -61,7 +61,7 @@ namespace geometry3Test
 
 
 
-        public static void test_convex_hull()
+        public static void test_convex_hull_2()
         {
             Random r = new Random(31337);
 
@@ -105,6 +105,78 @@ namespace geometry3Test
             //writer.AddPolygon(hullPoly, SVGWriter.Style.Outline("red", 2.0f));
             //writer.Write(TestUtil.GetTestOutputPath("test.svg"));
         }
+
+
+
+
+
+
+
+
+
+
+        public static void test_min_box_2()
+        {
+            Random r = new Random(31337);
+
+            bool write_svg = false;
+            int contained_circles_N = 100;
+            int test_iters = 1000;
+
+            //LocalProfiler p = new LocalProfiler();
+            //p.Start("Hulls");
+
+            QueryNumberType[] modes = new QueryNumberType[] { QueryNumberType.QT_DOUBLE, QueryNumberType.QT_INT64 };
+            //QueryNumberType[] modes = new QueryNumberType[] { QueryNumberType.QT_DOUBLE };
+
+            foreach (var queryMode in modes) {
+
+                for (int k = 0; k < test_iters; ++k) {
+
+                    int N = contained_circles_N;
+                    double scale = (r.NextDouble() + 0.1) * 1024.0;
+                    Interval1d radRange = new Interval1d(10, 100);
+
+                    Vector2d[] pts = TestUtil.RandomPoints(N, r, Vector2d.Zero, scale);
+                    double[] radius = TestUtil.RandomScalars(N, r, new Interval1d(radRange));
+
+                    double eps = MathUtil.Epsilonf;
+
+                    SVGWriter svg = (write_svg) ? new SVGWriter() : null;
+
+                    List<Vector2d> accumPts = new List<Vector2d>();
+                    for ( int i = 0; i < pts.Length; ++i ) {
+                        Polygon2d circ = Polygon2d.MakeCircle(radius[i], 16, radius[i]);
+                        circ.Translate(pts[i]);
+                        accumPts.AddRange(circ.Vertices);
+
+                        if ( svg != null )
+                            svg.AddPolygon(circ, SVGWriter.Style.Outline("black", 1.0f));
+                    }
+
+                    ContMinBox2 contbox = new ContMinBox2(accumPts, 0.001, queryMode, false);
+                    Box2d box = contbox.MinBox;
+
+                    if (svg != null) {
+                        svg.AddPolygon(new Polygon2d(box.ComputeVertices()), SVGWriter.Style.Outline("red", 2.0f));
+                        svg.Write(TestUtil.GetTestOutputPath("contbox.svg"));
+                    }
+
+                    foreach (Vector2d v in accumPts) {
+                        if (box.Contains(v))
+                            continue;
+                        double d = box.DistanceSquared(v);
+                        if (d < eps)
+                            continue;
+                        System.Console.WriteLine("test_min_box_2: Point {0} not contained!", v);
+                    }
+                }
+            }
+
+            //p.StopAll();
+            //System.Console.WriteLine(p.AllTimes());
+        }
+
 
 
     }
