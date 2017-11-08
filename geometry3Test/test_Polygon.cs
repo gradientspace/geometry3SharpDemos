@@ -179,5 +179,63 @@ namespace geometry3Test
 
 
 
+
+
+        // exports svg w/ different containments of point set (created by slicing mesh)
+        public static void containment_demo_svg()
+        {
+            DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            MeshTransforms.Scale(mesh, 4);
+
+            AxisAlignedBox3d meshBounds = mesh.CachedBounds;
+            Vector3d origin = meshBounds.Center;
+            origin -= 0.2 * meshBounds.Height * Vector3d.AxisY;
+            Frame3f plane = new Frame3f(origin, new Vector3d(1,3,0).Normalized);
+            MeshPlaneCut cut = new MeshPlaneCut(mesh, plane.Origin, plane.Z);
+            cut.Cut();
+
+            AxisAlignedBox2d polyBounds = AxisAlignedBox2d.Empty;
+            List<Polygon2d> polys = new List<Polygon2d>();
+            foreach (EdgeLoop loop in cut.CutLoops) {
+                Polygon2d poly = new Polygon2d();
+                foreach (int vid in loop.Vertices)
+                    poly.AppendVertex(mesh.GetVertex(vid).xz);
+                poly.Rotate(new Matrix2d(90,true), Vector2d.Zero);
+                polys.Add(poly);
+                polyBounds.Contain(poly.Bounds);
+            }
+
+            SVGWriter svg = new SVGWriter();
+            var polyStyle = SVGWriter.Style.Outline("red", 1.0f);
+            var contStyle = SVGWriter.Style.Outline("black", 1.0f);
+
+            for ( int k = 0; k < 3; ++k ) {
+                double shift = (k == 2) ? 1.4f : 1.1f;
+                Vector2d tx = (k-1) * (polyBounds.Width * shift) * Vector2d.AxisX;
+                List<Vector2d> pts = new List<Vector2d>();
+                foreach (Polygon2d poly in polys) {
+                    var p2 = new Polygon2d(poly).Translate(tx);
+                    pts.AddRange(p2);
+                    svg.AddPolygon(p2, polyStyle);
+                }
+
+                if ( k == 0 ) {
+                    ConvexHull2 hull = new ConvexHull2(pts, 0.001, QueryNumberType.QT_DOUBLE);
+                    svg.AddPolygon(hull.GetHullPolygon(), contStyle);
+                } else if ( k == 1 ) {
+                    ContMinBox2 contbox = new ContMinBox2(pts, 0.001, QueryNumberType.QT_DOUBLE, false);
+                    svg.AddPolygon(new Polygon2d(contbox.MinBox.ComputeVertices()), contStyle);
+                } else if (k == 2) {
+                    ContMinCircle2 contcirc = new ContMinCircle2(pts);
+                    svg.AddCircle(contcirc.Result, contStyle);
+                }
+
+            }
+
+
+            svg.Write(TestUtil.GetTestOutputPath("contain_demos.svg"));
+        }
+
+
     }
 }

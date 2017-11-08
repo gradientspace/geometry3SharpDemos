@@ -45,6 +45,41 @@ namespace geometry3Test
         }
 
 
+
+        public static void WriteTestOutputGraph(DGraph2 graph, string sFilename, double vtxRadius = 2.5)
+        {
+            WriteTestOutputGraphs(new List<DGraph2>() { graph }, sFilename, SVGWriter.Style.Outline("black", 1.0f),
+                SVGWriter.Style.Outline("red", 1.0f), vtxRadius);
+        }
+        public static void WriteTestOutputGraphs(List<DGraph2> graphs, string sFilename, double vtxRadius = 2.5) {
+            WriteTestOutputGraphs(graphs, sFilename, SVGWriter.Style.Outline("black", 1.0f),
+                SVGWriter.Style.Outline("red", 1.0f), vtxRadius);
+        }
+        public static void WriteTestOutputGraphs(List<DGraph2> graphs, string sFilename,
+            SVGWriter.Style lineStyle, SVGWriter.Style vtxStyle, double vtxRadius = 2.5 )
+        {
+            Vector2d a = Vector2d.Zero, b = Vector2d.Zero;
+            SVGWriter svg = new SVGWriter();
+            foreach ( DGraph2 graph in graphs ) {
+                foreach ( int eid in graph.EdgeIndices() ) {
+                    graph.GetEdgeV(eid, ref a, ref b);
+                    svg.AddLine(new Segment2d(a, b), lineStyle);
+                }
+            }
+            if (vtxRadius > 0) {
+                foreach (DGraph2 graph in graphs) {
+                    foreach (int vid in graph.VertexIndices()) {
+                        a = graph.GetVertex(vid);
+                        svg.AddCircle(new Circle2d(a, vtxRadius), vtxStyle);
+                    }
+                }
+            }
+            svg.Write(Program.TEST_OUTPUT_PATH + sFilename);
+        }
+
+
+
+
         public static void WriteDebugMesh(IMesh mesh, string sfilename, bool write_groups = true, bool write_vtxcolors = false, bool write_vtxuv = false)
         {
             OBJWriter writer = new OBJWriter();
@@ -246,7 +281,7 @@ namespace geometry3Test
         {
             Vector2d[] v = new Vector2d[Count];
             for (int k = 0; k < Count; ++k)
-                v[k] = new Vector2d(scale * r.NextDouble(), scale * r.NextDouble()) + center;
+                v[k] = new Vector2d(scale * 2.0*(r.NextDouble()-0.5), scale * 2.0 * (r.NextDouble() - 0.5)) + center;
             return v;
         }
 
