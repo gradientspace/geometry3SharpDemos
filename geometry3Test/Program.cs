@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using g3;
 
 namespace geometry3Test
@@ -10,9 +9,9 @@ namespace geometry3Test
 	static class Program
 	{
 		public static string TEST_FILES_PATH {
-			get { return Util.IsRunningOnMono() ? "../../test_files/" : "..\\..\\test_files\\"; }
-		}
-		public static string TEST_OUTPUT_PATH {
+            get { return Util.IsRunningOnMono() ? "../../test_files/" : "..\\..\\test_files\\"; }
+        }
+        public static string TEST_OUTPUT_PATH {
 			get { return Util.IsRunningOnMono() ? "../../test_output/" : "..\\..\\test_output\\"; }
 		}
 
@@ -90,7 +89,7 @@ namespace geometry3Test
             //test_Polygon.containment_demo_svg();
 
             //test_DGraph2.test_arrangement_stress();
-            //test_DGraph2.test_arrangement_demo();
+            test_DGraph2.test_arrangement_demo();
 
 
             System.Console.WriteLine("Done tests, press enter key to exit");
