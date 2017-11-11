@@ -7,6 +7,47 @@ namespace geometry3Test
 {
 	public static class test_Polygon
 	{
+
+
+		public static void test_winding()
+		{
+			Random r = new Random(31337);
+			int NPTS = 1000;
+
+			double radius = 1;
+			Polygon2d poly = Polygon2d.MakeCircle(radius, 777);
+			Vector2d[] testPts = TestUtil.RandomPoints(NPTS, r, Vector2d.Zero, radius);
+			foreach(Vector2d v in testPts) {
+				bool really_inside = (v.Length < radius);
+				bool inside = poly.Contains(v);
+				double winding0 = poly.WindingIntegral(v);
+				bool inside_winding = ! (Math.Abs(winding0) < MathUtil.Epsilonf);
+				if (really_inside != inside || really_inside != inside_winding) {
+					System.Console.WriteLine("Failed! truth {0}  inside {1}   winding0 {2}",
+										 really_inside, inside, winding0);
+				}
+			}
+
+			// test random polygons
+			int NPOLYS = 100;
+			for (int k = 0; k < NPOLYS; ++k) {
+				poly = new Polygon2d(TestUtil.RandomPoints(30, r, Vector2d.Zero, radius));
+				testPts = TestUtil.RandomPoints(NPTS, r, Vector2d.Zero, radius);
+				foreach (Vector2d v in testPts) {
+					bool inside = poly.Contains(v);
+					double winding0 = poly.WindingIntegral(v);
+					bool inside_winding = !(Math.Abs(winding0) < MathUtil.Epsilonf);
+					if (inside != inside_winding) {
+						System.Console.WriteLine("Failed! inside {0}   winding0 {1}", inside, winding0);
+					}
+				}
+			}
+		}
+
+
+
+
+
 		
 		public static void test_svg()
 		{
