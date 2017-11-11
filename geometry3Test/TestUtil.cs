@@ -29,7 +29,7 @@ namespace geometry3Test
             OBJWriter writer = new OBJWriter();
             var s = new System.IO.StreamWriter(Program.TEST_OUTPUT_PATH + sFilename, false);
             writer.Write(s, new List<WriteMesh> { new WriteMesh(mesh) }, 
-                new WriteOptions() { bWriteGroups = write_groups, bPerVertexColors = write_vtxcolors, bPerVertexUVs = write_vtxuv } );
+                new WriteOptions() { bPerVertexNormals = true, bWriteGroups = write_groups, bPerVertexColors = write_vtxcolors, bPerVertexUVs = write_vtxuv } );
 			s.Close();
         }
         public static void WriteTestOutputMeshes(List<IMesh> meshes, string sFilename, bool write_groups = true, bool write_vtxcolors = false, bool write_vtxuv = false)
@@ -39,7 +39,7 @@ namespace geometry3Test
             List<WriteMesh> wm = new List<WriteMesh>();
             foreach (var m in meshes)
                 wm.Add(new WriteMesh(m));
-            WriteOptions opt = new WriteOptions() { bCombineMeshes = false, bWriteGroups = write_groups, bPerVertexColors = write_vtxcolors, bPerVertexUVs = write_vtxuv };
+            WriteOptions opt = new WriteOptions() { bCombineMeshes = false, bPerVertexNormals = true, bWriteGroups = write_groups, bPerVertexColors = write_vtxcolors, bPerVertexUVs = write_vtxuv };
             writer.Write(s, wm, opt );
             s.Close();
         }

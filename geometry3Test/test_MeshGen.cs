@@ -11,40 +11,56 @@ namespace geometry3Test
     {
         public static void WriteGeneratedMesh(MeshGenerator gen, string sFilename)
         {
-            SimpleMesh mesh = new SimpleMesh();
-            gen.MakeMesh(mesh);
-            TestUtil.WriteDebugMesh(mesh, sFilename);
+            DMesh3 mesh = gen.MakeDMesh();
+            TestUtil.WriteTestOutputMesh(mesh, sFilename);
         }
 
         public static void test_basic_generators()
         {
             TrivialDiscGenerator disc_gen = new TrivialDiscGenerator();
             disc_gen.Generate();
-            WriteGeneratedMesh(disc_gen, "__g3Test_disc.obj");
+            WriteGeneratedMesh(disc_gen, "meshgen_Disc.obj");
 
             TrivialRectGenerator rect_gen = new TrivialRectGenerator();
             rect_gen.Generate();
-            WriteGeneratedMesh(rect_gen, "__g3Test_rect.obj");
+            WriteGeneratedMesh(rect_gen, "meshgen_Rect.obj");
 
 
             PuncturedDiscGenerator punc_disc_gen = new PuncturedDiscGenerator();
             punc_disc_gen.Generate();
-            WriteGeneratedMesh(punc_disc_gen, "__g3Test_punctured_disc.obj");
+            WriteGeneratedMesh(punc_disc_gen, "meshgen_PuncturedDisc.obj");
 
             TrivialBox3Generator box_gen = new TrivialBox3Generator();
             Frame3f f = Frame3f.Identity;
             f.Rotate(Quaternionf.AxisAngleD(Vector3f.AxisY, 45.0f));
             f.Rotate(Quaternionf.AxisAngleD(Vector3f.AxisZ, 45.0f));
             box_gen.Box = new Box3d(f.Origin, f.X, f.Y, f.Z, new Vector3d(3, 2, 1));
-            //box_gen.NoSharedVertices = true;
             box_gen.Generate();
-            WriteGeneratedMesh(box_gen, "__g3Test_trivial_box.obj");
+            WriteGeneratedMesh(box_gen, "meshgen_TrivialBox_shared.obj");
+            box_gen.NoSharedVertices = true;
+            box_gen.Generate();
+            WriteGeneratedMesh(box_gen, "meshgen_TrivialBox_noshared.obj");
 
 
             RoundRectGenerator roundrect_gen = new RoundRectGenerator();
             roundrect_gen.Width = 2;
             roundrect_gen.Generate();
-            WriteGeneratedMesh(roundrect_gen, "__g3Test_round_rect.obj");
+            WriteGeneratedMesh(roundrect_gen, "meshgen_RoundRect.obj");
+
+
+            GridBox3Generator gridbox_gen = new GridBox3Generator();
+            gridbox_gen.Generate();
+            WriteGeneratedMesh(gridbox_gen, "meshgen_GridBox_shared.obj");
+            gridbox_gen.NoSharedVertices = true;
+            gridbox_gen.Generate();
+            WriteGeneratedMesh(gridbox_gen, "meshgen_GridBox_noshared.obj");
+
+            Sphere3Generator_NormalizedCube normcube_gen = new Sphere3Generator_NormalizedCube();
+            normcube_gen.Generate();
+            WriteGeneratedMesh(normcube_gen, "meshgen_Sphere_NormalizedCube_shared.obj");
+            normcube_gen.NoSharedVertices = true;
+            normcube_gen.Generate();
+            WriteGeneratedMesh(normcube_gen, "meshgen_Sphere_NormalizedCube_noshared.obj");
         }
 
 
