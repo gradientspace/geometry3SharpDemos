@@ -35,55 +35,53 @@ namespace geometry3Test
 
             //test_dmesh();
             //test_DMesh3.merge_test_closed_mesh();
+            //test_DMesh3.copy_performance();
+            //test_DMesh3.performance_grinder();
 
-            test_Remesher.WriteDebugMeshes = true;
-			//test_Remesher.test_basic_closed_remesh();
-			//test_Remesher.test_remesh_smoothing();
-			//test_Remesher.test_remesh_constraints_fixedverts();
-			//test_Remesher.test_remesh_constraints_vertcurves();
-			//test_Remesher.test_remesh_region();
+            //test_Remesher.WriteDebugMeshes = true;
+            //test_Remesher.test_basic_closed_remesh();
+            //test_Remesher.test_remesh_smoothing();
+            //test_Remesher.test_remesh_constraints_fixedverts();
+            //test_Remesher.test_remesh_constraints_vertcurves();
+            //test_Remesher.test_remesh_region();
 
-			//test_Reducer.test_basic_closed_reduce();
-			//test_Reducer.test_reduce_constraints_fixedverts();
-			//test_Reducer.test_reduce_profiling();
+            //test_Reducer.test_basic_closed_reduce();
+            //test_Reducer.test_reduce_constraints_fixedverts();
+            //test_Reducer.test_reduce_profiling();
 
-			//test_Spatial.test_AABBTree_basic();
-			//test_Spatial.test_AABBTree_TriDist();
-			//test_Spatial.test_AABBTree_profile();
-			//test_Spatial.test_AABBTree_RayHit();
+            //test_Spatial.test_AABBTree_basic();
+            //test_Spatial.test_AABBTree_TriDist();
+            //test_Spatial.test_AABBTree_profile();
+            //test_Spatial.test_AABBTree_RayHit();
 
-			//test_MeshGen.test_basic_generators();
-			//test_MeshGen.test_mesh_builders();
-			//test_MeshGen.test_marching_cubes();
+            //test_MeshGen.test_basic_generators();
+            //test_MeshGen.test_mesh_builders();
+            //test_MeshGen.test_marching_cubes();
 
-			//test_Solvers.test_Matrices();
-			//test_Solvers.test_SparseCG();
-			//test_Solvers.test_Laplacian();
+            //test_Solvers.test_Matrices();
+            //test_Solvers.test_SparseCG();
+            //test_Solvers.test_Laplacian();
 
-			//test_Deformers.test_LaplacianDeformation();
+            //test_Deformers.test_LaplacianDeformation();
 
-			//test_MeshEdits.test_basic_fills();
+            //test_MeshEdits.test_basic_fills();
+            //test_MeshEdits.test_plane_cut();
 
+            //test_MeshBoundary.test_mesh_boundary();
+            //test_MeshRegionBoundary.test_region_boundary();
 
-			//test_MeshEdits.test_plane_cut();
+            //test_Grids.test_levelset_basic();
 
+            //test_Dijkstra.test_dijkstra();
+            //test_Dijkstra.profile_dijkstra_2b(500);
+            //test_Dijkstra.profile_dijkstra_2b_reuse(500);
 
-			//test_MeshBoundary.test_mesh_boundary();
-			//test_MeshRegionBoundary.test_region_boundary();
+            //test_Dijkstra.test_local_param();
+            //test_Dijkstra.test_uv_insert_segment();
+            //test_Dijkstra.test_uv_insert_string();
 
-			//test_Grids.test_levelset_basic();
-
-			//test_Dijkstra.test_dijkstra();
-			//test_Dijkstra.profile_dijkstra_2b(500);
-			//test_Dijkstra.profile_dijkstra_2b_reuse(500);
-
-			//test_Dijkstra.test_local_param();
-			//test_Dijkstra.test_uv_insert_segment();
-			//test_Dijkstra.test_uv_insert_string();
-			//test_Debugging.test();
-
-			test_Polygon.test_winding();
-			//test_Polygon.profile_winding();
+            //test_Polygon.test_winding();
+            //test_Polygon.profile_winding();
             //test_Polygon.test_svg();
             //test_Polygon.test_tiling();
             //test_Polygon.test_convex_hull_2();
@@ -93,6 +91,7 @@ namespace geometry3Test
             //test_DGraph2.test_arrangement_stress();
             //test_DGraph2.test_arrangement_demo();
 
+            test_Debugging.test();
 
             System.Console.WriteLine("Done tests, press enter key to exit");
             System.Console.ReadLine();

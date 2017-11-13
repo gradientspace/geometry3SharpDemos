@@ -108,7 +108,7 @@ namespace geometry3Test
 				TestUtil.WriteTestOutputMesh(mesh, name + "_cut" + ".obj");
 
 
-				if (DO_EXHAUSTIVE_TESTS == true)
+				if (DO_EXHAUSTIVE_TESTS == false)
 					continue;
 
 

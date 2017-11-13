@@ -13,7 +13,6 @@ namespace geometry3Test
 
         public static void test()
         {
-
         }
 
     }

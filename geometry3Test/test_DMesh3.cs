@@ -393,5 +393,107 @@ namespace geometry3Test
         }
 
 
+
+
+
+        public static void copy_performance()
+        {
+            Sphere3Generator_NormalizedCube meshgen = new Sphere3Generator_NormalizedCube() { EdgeVertices = 200 };
+            meshgen.Generate();
+            DMesh3 sphereMesh = meshgen.MakeDMesh();
+
+            DateTime start = DateTime.Now;
+
+            for (int k = 0; k < 250; ++k) {
+                if (k % 10 == 0)
+                    System.Console.WriteLine("{0} / 250", k);
+                DMesh3 m = new DMesh3(sphereMesh);
+            }
+
+            DateTime end = DateTime.Now;
+            System.Console.WriteLine("Time {0}", (end - start).TotalSeconds);
+        }
+
+
+
+        public static void performance_grinder()
+        {
+            LocalProfiler p = new LocalProfiler();
+
+            DateTime start = DateTime.Now;
+
+            //p.Start("Meshgen");
+            //for (int k = 0; k < 100; ++k) {
+            //    Sphere3Generator_NormalizedCube tmpgen = new Sphere3Generator_NormalizedCube();
+            //    tmpgen.EdgeVertices = 100;
+            //    tmpgen.Generate();
+            //    DMesh3 tmp = tmpgen.MakeDMesh();
+            //}
+            //p.StopAndAccumulate("Meshgen");
+
+            //System.Console.WriteLine("done meshgen");
+
+            Sphere3Generator_NormalizedCube meshgen = new Sphere3Generator_NormalizedCube() { EdgeVertices = 100 };
+            meshgen.Generate();
+            DMesh3 sphereMesh = meshgen.MakeDMesh();
+
+
+            //p.Start("Spatial");
+            //for (int k = 0; k < 100; ++k) {
+            //    DMeshAABBTree3 tmpspatial = new DMeshAABBTree3(sphereMesh);
+            //    tmpspatial.Build();
+            //}
+            //p.StopAndAccumulate("Spatial");
+
+            //System.Console.WriteLine("done spatial");
+
+            meshgen.EdgeVertices = 5;
+            meshgen.Generate();
+            sphereMesh = meshgen.MakeDMesh();
+            double remesh_len = (2.0 / 5.0) * 0.025;   // takes ~220s
+            //double remesh_len = (2.0 / 5.0) * 0.05;
+
+            long max_mem = 0;
+            Remesher remesher = new Remesher(sphereMesh);
+            for (int k = 0; k < 10; ++k) {
+                System.Console.WriteLine("{0}", k);
+                p.Start("Remesh");
+                remesher.SetTargetEdgeLength(remesh_len);
+                remesher.SmoothSpeedT = 0.5f;
+                for (int j = 0; j < 20; ++j) {
+                    remesher.BasicRemeshPass();
+                    foreach (int vid in sphereMesh.VertexIndices()) {
+                        Vector3d v = sphereMesh.GetVertex(vid);
+                        v.Normalize();
+                        sphereMesh.SetVertex(vid, v);
+                    }
+                }
+                p.StopAndAccumulate("Remesh");
+
+                //System.Console.WriteLine(sphereMesh.MeshInfoString());
+
+                System.Console.WriteLine(" {0}", k);
+
+                p.Start("Reduce");
+                remesher.SetTargetEdgeLength(remesh_len * 10);
+                for (int j = 0; j < 20; ++j) {
+                    remesher.BasicRemeshPass();
+                    foreach (int vid in sphereMesh.VertexIndices()) {
+                        Vector3d v = sphereMesh.GetVertex(vid);
+                        v.Normalize();
+                        sphereMesh.SetVertex(vid, v);
+                    }
+                }
+                p.StopAndAccumulate("Reduce");
+            }
+
+            DateTime end = DateTime.Now;
+
+            System.Console.WriteLine("done remesh");
+            System.Console.WriteLine("Time {0} MaxMem {1}", (end-start).TotalSeconds, max_mem / (1024*1024));
+            System.Console.WriteLine(p.AllAccumulatedTimes("Accumulated: "));
+        }
+
+
     }
 }
