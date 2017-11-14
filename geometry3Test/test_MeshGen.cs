@@ -90,8 +90,8 @@ namespace geometry3Test
             DMesh3 m1 = DMesh3Builder.Build(Vf, Ti, Nd);
             DMesh3 m2 = DMesh3Builder.Build(Vl, Tl, Nl);
 
-            Util.gDevAssert(origMesh.IsSameMesh(m1));
-            Util.gDevAssert(origMesh.IsSameMesh(m2));
+            Util.gDevAssert(origMesh.IsSameMesh(m1, true));
+            Util.gDevAssert(origMesh.IsSameMesh(m2, true));
            
 
         }
