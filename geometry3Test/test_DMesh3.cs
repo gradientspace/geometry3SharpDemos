@@ -408,6 +408,9 @@ namespace geometry3Test
                 if (k % 10 == 0)
                     System.Console.WriteLine("{0} / 250", k);
                 DMesh3 m = new DMesh3(sphereMesh);
+                //m.CheckValidity();
+                //if (!m.IsSameMesh(sphereMesh))
+                //    System.Console.WriteLine("NOT SAME MESH!");
             }
 
             DateTime end = DateTime.Now;

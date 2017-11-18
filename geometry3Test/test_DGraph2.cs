@@ -11,6 +11,81 @@ namespace geometry3Test
     {
 
 
+
+
+
+
+
+
+        public static void test_splitter()
+        {
+            Polygon2d poly = Polygon2d.MakeCircle(1000, 16);
+            Polygon2d hole = Polygon2d.MakeCircle(500, 32); hole.Reverse();
+            GeneralPolygon2d gpoly = new GeneralPolygon2d(poly);
+            gpoly.AddHole(hole);
+            //Polygon2d poly = Polygon2d.MakeRectangle(Vector2d.Zero, 1000, 1000);
+
+            DGraph2 graph = new DGraph2();
+            graph.AppendPolygon(gpoly);
+
+            System.Console.WriteLine("Stats before: verts {0} edges {1} ", graph.VertexCount, graph.EdgeCount);
+
+            GraphSplitter2d splitter = new GraphSplitter2d(graph);
+            splitter.InsideTestF = gpoly.Contains;
+
+            for (int k = 0; k < poly.VertexCount; ++k) {
+                Line2d line = new Line2d(poly[k], Vector2d.AxisY);
+                splitter.InsertLine(line);
+            }
+            System.Console.WriteLine("Stats after 1: verts {0} edges {1} ", graph.VertexCount, graph.EdgeCount);
+            for (int k = 0; k < poly.VertexCount; ++k) {
+                Line2d line = new Line2d(poly[k], Vector2d.AxisX);
+                splitter.InsertLine(line);
+            }
+            for (int k = 0; k < poly.VertexCount; ++k) {
+                Line2d line = new Line2d(poly[k], Vector2d.One.Normalized);
+                splitter.InsertLine(line);
+            }
+            for (int k = 0; k < poly.VertexCount; ++k) {
+                Line2d line = new Line2d(poly[k], new Vector2d(1,-1).Normalized);
+                splitter.InsertLine(line);
+            }
+
+            System.Console.WriteLine("Stats after: verts {0} edges {1} ", graph.VertexCount, graph.EdgeCount);
+
+
+            Random r = new Random(31337);
+            foreach (int vid in graph.VertexIndices()) {
+                Vector2d v = graph.GetVertex(vid);
+                v += TestUtil.RandomPoints(1, r, v, 25)[0];
+                graph.SetVertex(vid, v);
+            }
+
+
+
+            SVGWriter svg = new SVGWriter();
+            svg.AddGraph(graph);
+
+            var vtx_style = SVGWriter.Style.Outline("red", 1.0f);
+            foreach (int vid in graph.VertexIndices()) {
+                Vector2d v = graph.GetVertex(vid);
+                svg.AddCircle(new Circle2d(v, 10), vtx_style);
+            }
+
+            svg.Write(TestUtil.GetTestOutputPath("split_graph.svg"));
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         public static void test_arrangement_stress()
         {
             Random r = new Random(31337);
@@ -28,7 +103,6 @@ namespace geometry3Test
 
             //TestUtil.WriteTestOutputGraph(builder.Graph, "graph_complex.svg");
         }
-
 
 
 
@@ -54,7 +128,7 @@ namespace geometry3Test
                     poly.AppendVertex(mesh.GetVertex(vid).xz);
 
                 poly.Simplify(simplify_thresh, 0.01, true);
-                foreach (Vector2d v in poly)
+                foreach (Vector2d v in poly.Vertices)
                     srcpts.Add(v);
 
                 builder.Insert(poly);

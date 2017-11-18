@@ -256,7 +256,7 @@ namespace geometry3Test
                 List<Vector2d> pts = new List<Vector2d>();
                 foreach (Polygon2d poly in polys) {
                     var p2 = new Polygon2d(poly).Translate(tx);
-                    pts.AddRange(p2);
+                    pts.AddRange(p2.Vertices);
                     svg.AddPolygon(p2, polyStyle);
                 }
 

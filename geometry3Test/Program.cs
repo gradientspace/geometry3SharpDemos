@@ -88,10 +88,11 @@ namespace geometry3Test
             //test_Polygon.test_min_box_2();
             //test_Polygon.containment_demo_svg();
 
-            //test_DGraph2.test_arrangement_stress();
-            //test_DGraph2.test_arrangement_demo();
+            test_DGraph2.test_arrangement_stress();
+            test_DGraph2.test_arrangement_demo();
+            test_DGraph2.test_splitter();
 
-            test_Debugging.test();
+            //test_Debugging.test();
 
             System.Console.WriteLine("Done tests, press enter key to exit");
             System.Console.ReadLine();
