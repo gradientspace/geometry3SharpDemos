@@ -12,6 +12,65 @@ namespace geometry3Test
 
 
 
+        public static void test_cells()
+        {
+            Polygon2d outer = Polygon2d.MakeCircle(1000, 17);
+            Polygon2d hole = Polygon2d.MakeCircle(100, 32); hole.Reverse();
+            GeneralPolygon2d gpoly = new GeneralPolygon2d(outer);
+            gpoly.AddHole(hole);
+
+            DGraph2 graph = new DGraph2();
+            graph.AppendPolygon(gpoly);
+
+            GraphSplitter2d splitter = new GraphSplitter2d(graph);
+            splitter.InsideTestF = gpoly.Contains;
+            for (int k = 0; k < outer.VertexCount; ++k) {
+                Line2d line = new Line2d(outer[k], Vector2d.AxisY);
+                splitter.InsertLine(line);
+            }
+            for (int k = 0; k < outer.VertexCount; ++k) {
+                Line2d line = new Line2d(outer[k], Vector2d.AxisX);
+                splitter.InsertLine(line);
+            }
+            for (int k = 0; k < outer.VertexCount; ++k) {
+                Line2d line = new Line2d(outer[k], Vector2d.One.Normalized);
+                splitter.InsertLine(line);
+            }
+            for (int k = 0; k < outer.VertexCount; ++k) {
+                Line2d line = new Line2d(outer[k], new Vector2d(1, -1).Normalized);
+                splitter.InsertLine(line);
+            }
+
+            GraphCells2d cells = new GraphCells2d(graph);
+            cells.FindCells();
+
+            List<Polygon2d> polys = cells.ContainedCells(gpoly);
+
+            for (int k = 0; k < polys.Count; ++k) {
+                double offset = polys[k].IsClockwise ? 4 : 20;
+                polys[k].PolyOffset(offset);
+            }
+
+
+            PlanarComplex cp = new PlanarComplex();
+            for (int k = 0; k < polys.Count; ++k)
+                cp.Add(polys[k]);
+
+            // convert back to solids
+            var options = PlanarComplex.FindSolidsOptions.Default;
+            options.WantCurveSolids = false;
+            options.SimplifyDeviationTolerance = 0;
+            var solids = cp.FindSolidRegions(options);
+
+            SVGWriter svg = new SVGWriter();
+            svg.AddGraph(graph, SVGWriter.Style.Outline("red", 5));
+            for (int k = 0; k < polys.Count; ++k)
+                svg.AddPolygon(polys[k], SVGWriter.Style.Outline("black", 1));
+
+            svg.Write(TestUtil.GetTestOutputPath("cells_graph.svg"));
+        }
+
+
 
 
 
