@@ -277,13 +277,22 @@ namespace geometry3Test
 
 
 
-        public static Vector2d[] RandomPoints(int Count, Random r, Vector2d center, double scale = 1.0)
+        public static Vector2d[] RandomPoints2(int Count, Random r, Vector2d center, double scale = 1.0)
         {
             Vector2d[] v = new Vector2d[Count];
             for (int k = 0; k < Count; ++k)
                 v[k] = new Vector2d(scale * 2.0*(r.NextDouble()-0.5), scale * 2.0 * (r.NextDouble() - 0.5)) + center;
             return v;
         }
+
+        public static Vector3d[] RandomPoints3(int Count, Random r, Vector3d center, double scale = 1.0)
+        {
+            Vector3d[] v = new Vector3d[Count];
+            for (int k = 0; k < Count; ++k)
+                v[k] = new Vector3d(scale * 2.0 * (r.NextDouble() - 0.5), scale * 2.0 * (r.NextDouble() - 0.5), scale * 2.0 * (r.NextDouble() - 0.5)) + center;
+            return v;
+        }
+
 
         public static double[] RandomScalars(int Count, Random r, Interval1d range)
         {

@@ -234,5 +234,70 @@ namespace geometry3Test
         }
 
 
+
+        public static void test_Winding()
+        {
+            Sphere3Generator_NormalizedCube gen = new Sphere3Generator_NormalizedCube() { EdgeVertices = 200 };
+            DMesh3 mesh = gen.Generate().MakeDMesh();
+            //DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            DMeshAABBTree3 spatial = new DMeshAABBTree3(mesh, true);
+            GC.Collect();
+
+            double maxdim = mesh.CachedBounds.MaxDim;
+            Vector3d center = mesh.CachedBounds.Center;
+
+            var pts = TestUtil.RandomPoints3(100, new Random(31337), center, maxdim*0.5);
+            int num_inside = 0;
+            foreach (Vector3d pt in pts) {
+                bool inside = spatial.IsInside(pt);
+                double distSqr = MeshQueries.TriDistanceSqr(mesh, spatial.FindNearestTriangle(pt), pt);
+                double ptDist = pt.Length;
+                double winding = mesh.WindingNumber(pt);
+                double winding_2 = spatial.WindingNumber(pt);
+                if (Math.Abs(winding - winding_2) > 0.00001)
+                    System.Diagnostics.Debugger.Break();
+                bool winding_inside = Math.Abs(winding) > 0.5;
+                if (inside != winding_inside)
+                    System.Diagnostics.Debugger.Break();
+                if (inside)
+                    num_inside++;
+            }
+            System.Console.WriteLine("inside {0} / {1}", num_inside, pts.Length);
+
+            // force rebuild for profiling code
+            GC.Collect();
+
+            LocalProfiler p = new LocalProfiler();
+            pts = TestUtil.RandomPoints3(1000, new Random(31337), center, maxdim * 0.5);
+
+            p.Start("full eval");
+            double sum = 0;
+            foreach (Vector3d pt in pts) {
+                double winding = mesh.WindingNumber(pt);
+                sum += winding;
+            }
+            p.StopAll();
+
+            p.Start("tree build");
+            spatial = new DMeshAABBTree3(mesh, true);
+            spatial.WindingNumber(Vector3d.Zero);
+            p.StopAll();
+
+            GC.Collect();
+            GC.Collect();
+
+            p.Start("tree eval");
+            sum = 0;
+            foreach (Vector3d pt in pts) {
+                double winding = spatial.WindingNumber(pt);
+                sum += winding;
+            }
+
+            p.StopAll();
+
+            System.Console.WriteLine(p.AllTimes());
+        }
+
+
     }
 }

@@ -53,6 +53,7 @@ namespace geometry3Test
             //test_Spatial.test_AABBTree_TriDist();
             //test_Spatial.test_AABBTree_profile();
             //test_Spatial.test_AABBTree_RayHit();
+            test_Spatial.test_Winding();
 
             //test_MeshGen.test_basic_generators();
             //test_MeshGen.test_mesh_builders();
@@ -91,7 +92,7 @@ namespace geometry3Test
             //test_DGraph2.test_arrangement_stress();
             //test_DGraph2.test_arrangement_demo();
             //test_DGraph2.test_splitter();
-            test_DGraph2.test_cells();
+            //test_DGraph2.test_cells();
 
             //test_Debugging.test();
 

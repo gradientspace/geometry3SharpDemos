@@ -116,7 +116,7 @@ namespace geometry3Test
             Random r = new Random(31337);
             foreach (int vid in graph.VertexIndices()) {
                 Vector2d v = graph.GetVertex(vid);
-                v += TestUtil.RandomPoints(1, r, v, 25)[0];
+                v += TestUtil.RandomPoints2(1, r, v, 25)[0];
                 graph.SetVertex(vid, v);
             }
 
@@ -156,7 +156,7 @@ namespace geometry3Test
 
             // crazy stress-test
             for ( int k = 0; k < 1000; ++k ) {
-                var pts = TestUtil.RandomPoints(2, r, circ.Bounds.Center, 800);
+                var pts = TestUtil.RandomPoints2(2, r, circ.Bounds.Center, 800);
                 builder.Insert(new Segment2d(pts[0], pts[1]));
             }
 

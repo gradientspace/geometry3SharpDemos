@@ -16,7 +16,7 @@ namespace geometry3Test
 
 			double radius = 1;
 			Polygon2d poly = Polygon2d.MakeCircle(radius, 777);
-			Vector2d[] testPts = TestUtil.RandomPoints(NPTS, r, Vector2d.Zero, radius);
+			Vector2d[] testPts = TestUtil.RandomPoints2(NPTS, r, Vector2d.Zero, radius);
 			foreach(Vector2d v in testPts) {
 				bool really_inside = (v.Length < radius);
 				bool inside = poly.Contains(v);
@@ -31,8 +31,8 @@ namespace geometry3Test
 			// test random polygons
 			int NPOLYS = 100;
 			for (int k = 0; k < NPOLYS; ++k) {
-				poly = new Polygon2d(TestUtil.RandomPoints(30, r, Vector2d.Zero, radius));
-				testPts = TestUtil.RandomPoints(NPTS, r, Vector2d.Zero, radius);
+				poly = new Polygon2d(TestUtil.RandomPoints2(30, r, Vector2d.Zero, radius));
+				testPts = TestUtil.RandomPoints2(NPTS, r, Vector2d.Zero, radius);
 				foreach (Vector2d v in testPts) {
 					bool inside = poly.Contains(v);
 					double winding0 = poly.WindingIntegral(v);
@@ -118,7 +118,7 @@ namespace geometry3Test
                     int N = 2500;
                     double scale = (r.NextDouble() + 0.1) * 1024.0;
 
-                    Vector2d[] pts = TestUtil.RandomPoints(N, r, Vector2d.Zero, scale);
+                    Vector2d[] pts = TestUtil.RandomPoints2(N, r, Vector2d.Zero, scale);
 
                     double eps = MathUtil.Epsilonf;
 
@@ -178,7 +178,7 @@ namespace geometry3Test
                     double scale = (r.NextDouble() + 0.1) * 1024.0;
                     Interval1d radRange = new Interval1d(10, 100);
 
-                    Vector2d[] pts = TestUtil.RandomPoints(N, r, Vector2d.Zero, scale);
+                    Vector2d[] pts = TestUtil.RandomPoints2(N, r, Vector2d.Zero, scale);
                     double[] radius = TestUtil.RandomScalars(N, r, new Interval1d(radRange));
 
                     double eps = MathUtil.Epsilonf;
