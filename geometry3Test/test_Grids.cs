@@ -18,7 +18,7 @@ namespace geometry3Test
             AxisAlignedBox3d bounds = mesh.CachedBounds;
             float cellSize = (float)bounds.MaxDim / 32.0f;
 
-            NarrowBandLevelSet levelSet = new NarrowBandLevelSet(mesh, cellSize);
+            MeshSignedDistanceGrid levelSet = new MeshSignedDistanceGrid(mesh, cellSize);
             levelSet.Compute();
 
             Vector3i dims = levelSet.Dimensions;

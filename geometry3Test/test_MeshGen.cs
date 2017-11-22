@@ -121,6 +121,48 @@ namespace geometry3Test
 
             MeshNormals.QuickCompute(c.Mesh);
             TestUtil.WriteTestOutputMesh(c.Mesh, "marching_cubes.obj");
+        }
+
+
+
+
+
+        public static void test_marching_cubes_levelset()
+        {
+            //DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_overlap_solids.obj");
+            //Sphere3Generator_NormalizedCube gen = new Sphere3Generator_NormalizedCube() { EdgeVertices = 100, Radius = 5 };
+            //DMesh3 mesh = gen.Generate().MakeDMesh();
+
+            AxisAlignedBox3d bounds = mesh.CachedBounds;
+            int numcells = 128;
+            double cellsize = bounds.MaxDim / numcells;
+
+            MeshSignedDistanceGrid levelSet = new MeshSignedDistanceGrid(mesh, cellsize);
+            levelSet.ExactBandWidth = 3;
+            //levelSet.InsideMode = MeshSignedDistanceGrid.InsideModes.CrossingCount;
+            levelSet.UseParallel = true;
+            levelSet.ComputeMode = MeshSignedDistanceGrid.ComputeModes.NarrowBandOnly;
+            levelSet.Compute();
+
+            var iso = new DenseGridTrilinearImplicit(levelSet.Grid, levelSet.GridOrigin, levelSet.CellSize);
+
+            MarchingCubes c = new MarchingCubes();
+            c.Implicit = iso;
+            c.Bounds = mesh.CachedBounds;
+            c.Bounds.Expand(c.Bounds.MaxDim * 0.1);
+            c.CubeSize = c.Bounds.MaxDim / 128;
+            //c.CubeSize = levelSet.CellSize;
+
+            c.Generate();
+
+            TestUtil.WriteTestOutputMesh(c.Mesh, "marching_cubes_levelset.obj");
+        }
+
+
+
+
+
 
         }
 
