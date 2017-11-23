@@ -199,6 +199,110 @@ namespace geometry3Test
 
 
 
+        public static void test_AABBTree_TriTriIntr()
+        {
+            System.Console.WriteLine("test_AABBTree_TriTriIntr()");
+
+            Sphere3Generator_NormalizedCube gen = new Sphere3Generator_NormalizedCube() { Radius = 1, EdgeVertices = 25 };
+            DMesh3 sphereMesh = gen.Generate().MakeDMesh();
+            Reducer reducer = new Reducer(sphereMesh); reducer.ReduceToTriangleCount(77);
+
+            int hit_count = 0;
+            Random r = new Random(31337);
+            for (int iter = 0; iter < 5000; ++iter) {
+                DMesh3 sphere1 = new DMesh3(sphereMesh), sphere2 = new DMesh3(sphereMesh);
+                Vector3d[] pts = TestUtil.RandomPoints3(3, r, Vector3d.Zero, 10);   // at 10, about half of the spheres intersect
+                Vector3d p1 = pts[0], p2 = pts[1];
+                double r1 = 5, r2 = 10;
+                double eps = (r1 + r2) * 0.5 * 0.001;
+                MeshTransforms.Scale(sphere1, r1);
+                MeshTransforms.Translate(sphere1, p1);
+                MeshTransforms.Scale(sphere2, r2);
+                MeshTransforms.Translate(sphere2, p2);
+
+                DMeshAABBTree3 tree1 = new DMeshAABBTree3(sphere1, true);
+                DMeshAABBTree3 tree2 = new DMeshAABBTree3(sphere2, true);
+
+                bool spheres_intersect = p1.Distance(p2) < (r1 + r2 + 2*eps);
+                if (spheres_intersect && p1.Distance(p2) + Math.Min(r1, r2) < Math.Max(r1, r2)*0.9)
+                    spheres_intersect = false;
+
+                Index2i hitBrute = MeshQueries.FindIntersectingTriangles_LinearSearch(sphere1, sphere2);
+                bool bHitBrute = hitBrute != Index2i.Max;
+                if (bHitBrute)
+                    hit_count++;
+
+                // [RMS] not reliable because of tesselation
+                //Util.gDevAssert(bHitBrute == spheres_intersect);
+
+                bool bHitTree1 = tree1.TestIntersection(tree2);
+                bool bHitTree2 = tree2.TestIntersection(tree1);
+
+                Util.gDevAssert(bHitBrute == bHitTree1 && bHitTree1 == bHitTree2);
+            }
+
+            System.Console.WriteLine(hit_count.ToString());
+        }
+
+
+
+
+
+        public static void test_AABBTree_TriTriDist()
+        {
+            System.Console.WriteLine("test_AABBTree_TriTriDist()");
+
+            Sphere3Generator_NormalizedCube gen = new Sphere3Generator_NormalizedCube() { Radius = 1, EdgeVertices = 6 };
+            DMesh3 sphereMesh = gen.Generate().MakeDMesh();
+            Reducer reducer = new Reducer(sphereMesh); reducer.ReduceToTriangleCount(77);
+
+
+            Random r = new Random(31337);
+            for ( int iter = 0; iter < 1000; ++iter ) {
+                DMesh3 sphere1 = new DMesh3(sphereMesh), sphere2 = new DMesh3(sphereMesh);
+                Vector3d[] pts = TestUtil.RandomPoints3(3, r, Vector3d.Zero, 100);
+                Vector3d p1 = pts[0], p2 = pts[1];
+                double r1 = 5, r2 = 10;
+                MeshTransforms.Scale(sphere1, r1);
+                MeshTransforms.Translate(sphere1, p1);
+                MeshTransforms.Scale(sphere2, r2);
+                MeshTransforms.Translate(sphere2, p2);
+
+                DMeshAABBTree3 tree1 = new DMeshAABBTree3(sphere1, true);
+                DMeshAABBTree3 tree2 = new DMeshAABBTree3(sphere2, true);
+
+                double sphere_dist = p1.Distance(p2) - (r1 + r2);
+
+                double distBrute = double.MaxValue;
+                Index2i nearestBrute = MeshQueries.FindNearestTriangles_LinearSearch(sphere1, sphere2, out distBrute);
+                DistTriangle3Triangle3 qBrute = MeshQueries.TrianglesDistance(sphere1, nearestBrute.a, sphere2, nearestBrute.b);
+
+                double distTree = double.MaxValue;
+                Index2i nearestTree = tree1.FindNearestTriangles(tree2, null, out distTree);
+                DistTriangle3Triangle3 qTree = MeshQueries.TrianglesDistance(sphere1, nearestTree.a, sphere2, nearestTree.b);
+
+                double distTree2 = double.MaxValue;
+                Index2i nearestTree2 = tree2.FindNearestTriangles(tree1, null, out distTree2);
+
+                // pairs are unstable if we are on an edge
+                if (qBrute.Triangle0BaryCoords.x < 0.99 && qBrute.Triangle0BaryCoords.y < 0.99 && qBrute.Triangle0BaryCoords.z < 0.99 &&
+                     qBrute.Triangle1BaryCoords.x < 0.99 && qBrute.Triangle1BaryCoords.y < 0.99 && qBrute.Triangle1BaryCoords.z < 0.99) {
+
+                    Util.gDevAssert(nearestBrute.a == nearestTree.a && nearestBrute.b == nearestTree.b);
+                    Util.gDevAssert(nearestBrute.b == nearestTree2.a && nearestBrute.a == nearestTree.b);
+                }
+
+                Util.gDevAssert( Math.Abs(distBrute - distTree) < MathUtil.Epsilonf &&
+                                 Math.Abs(distBrute - distTree2) < MathUtil.Epsilonf);
+
+            }
+        }
+
+
+
+
+
+
         public static void test_AABBTree_profile()
         {
             System.Console.WriteLine("Building test meshes");

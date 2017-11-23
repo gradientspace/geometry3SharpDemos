@@ -75,6 +75,7 @@
     <Compile Include="test_DMesh3.cs" />
     <Compile Include="test_Deformers.cs" />
     <Compile Include="test_Grids.cs" />
+    <Compile Include="test_MathTypes.cs" />
     <Compile Include="test_MeshRegionBoundary.cs" />
     <Compile Include="test_MeshBoundary.cs" />
     <Compile Include="test_Dijkstra.cs" />

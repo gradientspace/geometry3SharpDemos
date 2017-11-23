@@ -22,6 +22,10 @@ namespace geometry3Test
         [STAThread]
         static void Main()
         {
+#if DEBUG
+            Util.DebugBreakOnDevAssert = true;
+#endif
+
 
             //test_VectorTypes.test_rcvector();
             //test_VectorTypes.test_bitarrays();
@@ -29,6 +33,8 @@ namespace geometry3Test
             //test_Math.test_VectorTanCot();
             //test_Math.test_AngleClamp();
             //test_Math.test_RayBoxIntersect();
+
+            //test_MathTypes.all_tests();
 
             //test_VectorTypes.test_pq();
             //test_VectorTypes.profile_pq();
@@ -53,6 +59,8 @@ namespace geometry3Test
             //test_Spatial.test_AABBTree_TriDist();
             //test_Spatial.test_AABBTree_profile();
             //test_Spatial.test_AABBTree_RayHit();
+            test_Spatial.test_AABBTree_TriTriDist();
+            test_Spatial.test_AABBTree_TriTriIntr();
             //test_Spatial.test_Winding();
 
             //test_MeshGen.test_basic_generators();
