@@ -44,6 +44,8 @@ namespace geometry3Test
             //test_DMesh3.copy_performance();
             //test_DMesh3.performance_grinder();
 
+            test_ntmesh();
+
             //test_Remesher.WriteDebugMeshes = true;
             //test_Remesher.test_basic_closed_remesh();
             //test_Remesher.test_remesh_smoothing();
@@ -133,6 +135,20 @@ namespace geometry3Test
 
             test_DMesh3.poke_test();
 
+        }
+
+
+
+
+        static void test_ntmesh()
+        {
+            test_NTMesh3.basic_tests();
+            test_NTMesh3.test_remove();
+            test_NTMesh3.poke_test();
+
+            test_NTMesh3.split_tests(true);
+            test_NTMesh3.split_tests(false);
+            test_NTMesh3.split_tests_nonmanifold();
         }
 
     }

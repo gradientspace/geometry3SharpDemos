@@ -72,6 +72,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="test_Debugging.cs" />
     <Compile Include="test_DGraph2.cs" />
+    <Compile Include="test_NTMesh3.cs" />
     <Compile Include="test_DMesh3.cs" />
     <Compile Include="test_Deformers.cs" />
     <Compile Include="test_Grids.cs" />
