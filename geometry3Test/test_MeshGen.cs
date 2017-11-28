@@ -59,6 +59,7 @@ namespace geometry3Test
             normcube_gen.Generate();
             WriteGeneratedMesh(normcube_gen, "meshgen_Sphere_NormalizedCube_shared.obj");
             normcube_gen.NoSharedVertices = true;
+            normcube_gen.Box = new Box3d(new Frame3f(Vector3f.One, Vector3f.One), Vector3d.One * 1.3);
             normcube_gen.Generate();
             WriteGeneratedMesh(normcube_gen, "meshgen_Sphere_NormalizedCube_noshared.obj");
         }
@@ -159,6 +160,67 @@ namespace geometry3Test
             TestUtil.WriteTestOutputMesh(c.Mesh, "marching_cubes_levelset.obj");
         }
 
+
+
+        public static void test_marching_cubes_topology()
+        {
+            AxisAlignedBox3d bounds = new AxisAlignedBox3d(1.0);
+            int numcells = 64;
+            double cellsize = bounds.MaxDim / numcells;
+
+            Random r = new Random(31337);
+            for (int ii= 0; ii < 100; ++ii) {
+
+                DenseGrid3f grid = new DenseGrid3f();
+                grid.resize(numcells, numcells, numcells);
+                grid.assign(1);
+                for (int k = 2; k < numcells - 3; k++) {
+                    for (int j = 2; j < numcells - 3; j++) {
+                        for (int i = 2; i < numcells - 3; i++) {
+                            double d = r.NextDouble();
+                            if (d > 0.9)
+                                grid[i, j, k] = 0.0f;
+                            else if (d > 0.5)
+                                grid[i, j, k] = 1.0f;
+                            else
+                                grid[i, j, k] = -1.0f;
+                        }
+                    }
+                }
+
+                var iso = new DenseGridTrilinearImplicit(grid, Vector3f.Zero, cellsize);
+
+                MarchingCubes c = new MarchingCubes();
+                c.Implicit = iso;
+                c.Bounds = bounds;
+                //c.Bounds.Max += 3 * cellsize * Vector3d.One;
+                //c.Bounds.Expand(2*cellsize);
+
+                // this produces holes
+                c.CubeSize = cellsize * 4.1;
+                //c.CubeSize = cellsize * 2;
+
+                //c.Bounds = new AxisAlignedBox3d(2.0);
+
+                c.Generate();
+
+                for (float f = 2.0f; f < 8.0f; f += 0.13107f) {
+                    c.CubeSize = cellsize * 4.1;
+                    c.Generate();
+                    c.Mesh.CheckValidity(false);
+
+                    MeshBoundaryLoops loops = new MeshBoundaryLoops(c.Mesh);
+                    if (loops.Count > 0)
+                        throw new Exception("found loops!");
+
+                }
+            }
+
+            //c.Mesh.CheckValidity(false);
+
+
+            //TestUtil.WriteTestOutputMesh(c.Mesh, "marching_cubes_topotest.obj");
+        }
 
 
 
