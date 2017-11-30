@@ -44,7 +44,7 @@ namespace geometry3Test
             //test_DMesh3.copy_performance();
             //test_DMesh3.performance_grinder();
 
-            test_ntmesh();
+            //test_ntmesh();
 
             //test_Remesher.WriteDebugMeshes = true;
             //test_Remesher.test_basic_closed_remesh();
@@ -61,18 +61,19 @@ namespace geometry3Test
             //test_Spatial.test_AABBTree_TriDist();
             //test_Spatial.test_AABBTree_profile();
             //test_Spatial.test_AABBTree_RayHit();
-            test_Spatial.test_AABBTree_TriTriDist();
-            test_Spatial.test_AABBTree_TriTriIntr();
+            //test_Spatial.test_AABBTree_TriTriDist();
+            //test_Spatial.test_AABBTree_TriTriIntr();
             //test_Spatial.test_Winding();
 
             //test_MeshGen.test_basic_generators();
             //test_MeshGen.test_mesh_builders();
             //test_MeshGen.test_marching_cubes();
-            test_MeshGen.test_marching_cubes_levelset();
+            //test_MeshGen.test_marching_cubes_levelset();
+            //test_MeshGen.test_marching_cubes_topology();
 
             //test_Solvers.test_Matrices();
             //test_Solvers.test_SparseCG();
-            //test_Solvers.test_Laplacian();
+            test_Solvers.test_Laplacian_deformer();
 
             //test_Deformers.test_LaplacianDeformation();
 
