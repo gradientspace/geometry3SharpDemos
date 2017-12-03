@@ -10,7 +10,7 @@ namespace geometry3Test
 
         public static void test_Matrices()
         {
-            int N = 10;
+            int N = 1000;
             DenseMatrix M1 = new DenseMatrix(N, N);
             SymmetricSparseMatrix M2 = new SymmetricSparseMatrix();
             for (int i = 0; i < N; ++i) {
@@ -38,13 +38,18 @@ namespace geometry3Test
             for (int i = 0; i < N; ++i)
                 Debug.Assert(MathUtil.EpsilonEqual(b1[i], b2[i]));
 
+			LocalProfiler p = new LocalProfiler();
+			p.Start("chol");
 
 			Debug.Assert(M1.IsSymmetric());
 			Debug.Assert(M1.IsPositiveDefinite());
 			CholeskyDecomposition decompM = new CholeskyDecomposition(M1);
-			decompM.Compute();
+			decompM.ComputeParallel();
 			if ( decompM.L.Multiply(decompM.L.Transpose()).EpsilonEquals(M1) == false )
-				System.Console.WriteLine("FAIL  choleskyM did not reproduce input");	
+				System.Console.WriteLine("FAIL  choleskyM did not reproduce input");
+
+			p.Stop("chol");
+			System.Console.WriteLine(p.AllTimes());
 
 
 			// known-result test
