@@ -131,7 +131,7 @@ namespace geometry3Test
 				int eid = r.Next() % mesh.EdgeCount;
 				if ( ! mesh.IsEdge(eid) )
 					continue;
-				bool bBoundary = mesh.edge_is_boundary(eid);
+				bool bBoundary = mesh.IsBoundaryEdge(eid);
 
 				DMesh3.EdgeFlipInfo flipInfo; 
 				MeshResult result = mesh.FlipEdge(eid, out flipInfo);
@@ -166,7 +166,7 @@ namespace geometry3Test
 				int eid = r.Next() % mesh.EdgeCount;
 				if ( ! mesh.IsEdge(eid) )
 					continue;
-				//bool bBoundary = mesh.edge_is_boundary(eid);
+				//bool bBoundary = mesh.IsBoundaryEdge(eid);
 				//if (bTestBoundary && bBoundary == false)
 				//	 continue;
 				Index2i ev = mesh.GetEdgeV(eid);
@@ -239,7 +239,7 @@ namespace geometry3Test
 			collapse_to_convergence(mesh);
 			int bdry_v = 0, bdry_t = 0, bdry_e = 0;
 			foreach ( int eid in mesh.EdgeIndices() ) {
-				if ( mesh.edge_is_boundary(eid) )
+				if ( mesh.IsBoundaryEdge(eid) )
 					bdry_e++;
 			}
 			Util.gDevAssert(bdry_e == 6);
@@ -249,7 +249,7 @@ namespace geometry3Test
 			}
 			Util.gDevAssert(bdry_t == 6);			
 			foreach ( int vid in mesh.VertexIndices() ) {
-				if ( mesh.vertex_is_boundary(vid) )
+				if ( mesh.IsBoundaryVertex(vid) )
 					bdry_v++;
 			}
 			Util.gDevAssert(bdry_v == 6);					
@@ -264,7 +264,7 @@ namespace geometry3Test
 			Util.gDevAssert( mesh.TriangleCount == 4 );
 			Util.gDevAssert( mesh.VertexCount == 4 );
 			foreach ( int eid in mesh.EdgeIndices() )
-				Util.gDevAssert( mesh.edge_is_boundary(eid) == false );
+				Util.gDevAssert( mesh.IsBoundaryEdge(eid) == false );
 		}
 
 
