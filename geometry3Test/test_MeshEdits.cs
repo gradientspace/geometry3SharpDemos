@@ -125,12 +125,41 @@ namespace geometry3Test
 					bCutOK = cut.Cut();
 					Debug.Assert(bCutOK);
 				}
-
-
-
 			} // test_plane_cut
-
-
 		}
-	}
+
+
+
+
+        public static void test_planar_fill()
+        {
+            //DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            //DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_hollow.obj");
+            DMesh3 mesh = TestUtil.LoadTestInputMesh("local\\__LAST_FAILED_CUT_MESH.obj");
+            double mine, maxe, avge;
+            MeshQueries.EdgeLengthStats(mesh, out mine, out maxe, out avge);
+
+            AxisAlignedBox3d bounds = mesh.CachedBounds;
+            Vector3d origin = bounds.Center;
+            Vector3d axis = Vector3d.AxisY;
+            double targetLen = avge;
+
+            origin = new Vector3d(-7.53203300, - 39.50826000, - 4.22260500);
+            axis = new Vector3d(0.00000007, 0.00000007, - 0.99999960);
+            targetLen = 3.0;
+
+            MeshPlaneCut cut = new MeshPlaneCut(mesh, origin, axis);
+            cut.Cut();
+
+            PlanarHoleFiller fill = new PlanarHoleFiller(cut) {
+                FillTargetEdgeLen = targetLen
+            };
+
+            if (fill.Fill() == false)
+                System.Console.WriteLine("test_meshEdits.test_planar_fill: Fill() failed!");
+
+            TestUtil.WriteTestOutputMesh(mesh, "planar_filled.obj");
+        }
+
+    }
 }

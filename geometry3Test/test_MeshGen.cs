@@ -25,6 +25,9 @@ namespace geometry3Test
             rect_gen.Generate();
             WriteGeneratedMesh(rect_gen, "meshgen_Rect.obj");
 
+            GriddedRectGenerator gridrect_gen = new GriddedRectGenerator();
+            gridrect_gen.Generate();
+            WriteGeneratedMesh(gridrect_gen, "meshgen_GriddedRect.obj");
 
             PuncturedDiscGenerator punc_disc_gen = new PuncturedDiscGenerator();
             punc_disc_gen.Generate();
@@ -93,10 +96,62 @@ namespace geometry3Test
 
             Util.gDevAssert(origMesh.IsSameMesh(m1, true));
             Util.gDevAssert(origMesh.IsSameMesh(m2, true));
-           
-
         }
 
+
+
+
+        public static void test_voxel_surface()
+        {
+            //DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            DMesh3 mesh = TestUtil.LoadTestInputMesh("holey_bunny_2.obj");
+            DMeshAABBTree3 spatial = new DMeshAABBTree3(mesh, autoBuild: true);
+
+            AxisAlignedBox3d bounds = mesh.CachedBounds;
+            int numcells = 64;
+            double cellsize = bounds.MaxDim / numcells;
+            MeshSignedDistanceGrid levelSet = new MeshSignedDistanceGrid(mesh, cellsize);
+            levelSet.UseParallel = true;
+            levelSet.Compute();
+
+            Bitmap3 bmp = new Bitmap3(levelSet.Dimensions);
+            foreach (Vector3i idx in bmp.Indices()) {
+                float f = levelSet[idx.x, idx.y, idx.z];
+                bmp.Set(idx, (f < 0) ? true : false);
+            }
+
+
+            //AxisAlignedBox3d bounds = mesh.CachedBounds;
+            //int numcells = 32;
+            //double cellsize = bounds.MaxDim / numcells;
+            //ShiftGridIndexer3 indexer = new ShiftGridIndexer3(bounds.Min-2*cellsize, cellsize);
+
+            //Bitmap3 bmp = new Bitmap3(new Vector3i(numcells, numcells, numcells));
+            //foreach (Vector3i idx in bmp.Indices()) {
+            //    Vector3d v = indexer.FromGrid(idx);
+            //    bmp.Set(idx, spatial.IsInside(v));
+            //}
+
+            //spatial.WindingNumber(Vector3d.Zero);
+            //Bitmap3 bmp = new Bitmap3(new Vector3i(numcells+3, numcells+3, numcells+3));
+            //gParallel.ForEach(bmp.Indices(), (idx) => {
+            //    Vector3d v = indexer.FromGrid(idx);
+            //    bmp.SafeSet(idx, spatial.WindingNumber(v) > 0.8);
+            //});
+
+
+            VoxelSurfaceGenerator voxGen = new VoxelSurfaceGenerator();
+            voxGen.Voxels = bmp;
+            voxGen.ColorSourceF = (idx) => {
+                return new Colorf((float)idx.x, (float)idx.y, (float)idx.z) * (1.0f / numcells);
+            };
+            voxGen.Generate();
+            DMesh3 voxMesh = voxGen.Meshes[0];
+
+            Util.WriteDebugMesh(voxMesh, "c:\\scratch\\temp.obj");
+
+            TestUtil.WriteTestOutputMesh(voxMesh, "voxel_surf.obj", true, true);
+        }
 
 
 

@@ -9,7 +9,33 @@ namespace geometry3Test
 	{
 
 
-		public static void test_winding()
+
+        public static void test_chamfer()
+        {
+            //Polygon2d poly = Polygon2d.MakeRectangle(Vector2d.Zero, 200, 200);
+            //if (poly.IsClockwise)
+            //    poly.Reverse();
+
+            Polygon2d poly = Polygon2d.MakeCircle(100, 64);
+            double max_offset = 50;
+            for ( int k = 0; k < poly.VertexCount; k++ ) {
+                double t = (double)k / (double)poly.VertexCount;
+                double offset = (k % 2 == 0) ? -t * max_offset : t * max_offset;
+                poly[k] = poly[k] + offset * poly[k].Normalized;
+            }
+
+            poly.Chamfer(60, 30, 30);
+
+            SVGWriter writer = new SVGWriter();
+            writer.AddPolygon(poly, SVGWriter.Style.Filled("lime", "black", 0.25f));
+
+            writer.Write(TestUtil.GetTestOutputPath("test.svg"));
+        }
+
+
+
+
+        public static void test_winding()
 		{
 			Random r = new Random(31337);
 			int NPTS = 1000;
@@ -65,7 +91,34 @@ namespace geometry3Test
 			writer.AddCircle(circ, SVGWriter.Style.Filled("yellow", "red", 5.0f));
 			writer.AddLine(seg, SVGWriter.Style.Outline("blue", 10.0f));
 
-			writer.Write(TestUtil.GetTestOutputPath("test.svg"));
+            int astep = 29;
+            Vector2d c = new Vector2d(-200, 100);
+            for ( int k = 1; k <= 12; ++k ) {
+                Arc2d arc = new Arc2d(c + k*45*Vector2d.AxisX, 20, 0, k * astep);
+                writer.AddArc(arc);
+                writer.AddBox(arc.Bounds, SVGWriter.Style.Outline("red", 0.5f));
+            }
+            c.y += 50;
+            for (int k = 1; k <= 12; ++k) {
+                Arc2d arc = new Arc2d(c + k * 45 * Vector2d.AxisX, 20, k* astep, (k+5) * astep);
+                writer.AddArc(arc);
+                writer.AddBox(arc.Bounds, SVGWriter.Style.Outline("red", 0.5f));
+            }
+            c.y += 50;
+            for (int k = 1; k <= 12; ++k) {
+                Arc2d arc = new Arc2d(c + k * 45 * Vector2d.AxisX, 20, k * astep, (k + 10) * astep);
+                writer.AddArc(arc);
+                writer.AddBox(arc.Bounds, SVGWriter.Style.Outline("red", 0.5f));
+            }
+            c.y += 50;
+            for (int k = 1; k <= 12; ++k) {
+                Arc2d arc = new Arc2d(c + k * 45 * Vector2d.AxisX, 20, k * astep, (k + 10) * astep);
+                arc.Reverse();
+                writer.AddArc(arc);
+                writer.AddBox(arc.Bounds, SVGWriter.Style.Outline("red", 0.5f));
+            }
+
+            writer.Write(TestUtil.GetTestOutputPath("test.svg"));
 		}
 
 

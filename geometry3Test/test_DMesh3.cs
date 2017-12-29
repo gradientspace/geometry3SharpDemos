@@ -24,6 +24,46 @@ namespace geometry3Test
         }
 
 
+        public static void test_normals()
+        {
+            // check that frames are ok
+            DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            foreach (int tid in mesh.TriangleIndices()) {
+                Vector3f n = (Vector3f)mesh.GetTriNormal(tid);
+                for (int j = 0; j < 3; ++j) {
+                    Frame3f f = mesh.GetTriFrame(tid, j);
+                    if (Math.Abs(f.X.Dot(f.Y)) > MathUtil.ZeroTolerancef ||
+                         Math.Abs(f.X.Dot(f.Z)) > MathUtil.ZeroTolerancef ||
+                         Math.Abs(f.Y.Dot(f.Z)) > MathUtil.ZeroTolerancef)
+                        throw new Exception("argh");
+                    Vector3f fn = f.Z;
+                    if (fn.Dot(n) < 0.99)
+                        throw new Exception("shit");
+                }
+            }
+
+            MeshNormals.QuickCompute(mesh);
+
+            foreach (int vid in mesh.VertexIndices()) {
+                Vector3f n = mesh.GetVertexNormal(vid);
+                for (int j = 1; j <= 2; ++j) {
+                    Frame3f f = mesh.GetVertexFrame(vid, (j == 1) ? true : false);
+                    Vector3f fn = f.GetAxis(j);
+                    if (Math.Abs(f.X.Dot(f.Y)) > MathUtil.ZeroTolerancef ||
+                         Math.Abs(f.X.Dot(f.Z)) > MathUtil.ZeroTolerancef ||
+                         Math.Abs(f.Y.Dot(f.Z)) > MathUtil.ZeroTolerancef)
+                        throw new Exception("argh");
+                    if (fn.Dot(n) < 0.99)
+                        throw new Exception("shit2");
+                }
+            }
+
+        }
+
+
+
+
+
         public static void test_remove()
         {
             System.Console.WriteLine("DMesh3:test_remove() starting");
@@ -415,6 +455,25 @@ namespace geometry3Test
 
             DateTime end = DateTime.Now;
             System.Console.WriteLine("Time {0}", (end - start).TotalSeconds);
+        }
+
+
+
+
+
+
+        public static void test_compact_in_place()
+        {
+            DMesh3 testMesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            testMesh.CheckValidity();
+            int[] test_counts = new int[] { 16, 256, 1023, 1024, 1025, 2047, 2048, 2049, testMesh.TriangleCount - 1, testMesh.TriangleCount };
+            foreach (int count in test_counts) {
+                DMesh3 mesh = new DMesh3(testMesh);
+                Reducer r = new Reducer(mesh); r.ReduceToTriangleCount(count);
+                mesh.CompactInPlace();
+                mesh.CheckValidity(false, FailMode.DebugAssert);
+                Util.gDevAssert(mesh.IsCompact);
+            }
         }
 
 
