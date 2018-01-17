@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using System.IO;
 using g3;
 
 namespace geometry3Test
@@ -43,5 +44,42 @@ namespace geometry3Test
         }
 
 
+
+        public static void test_read_thingi10k()
+        {
+            //const string THINGIROOT = "D:\\meshes\\Thingi10K\\raw_meshes\\";
+            const string THINGIROOT = "F:\\Thingi10K\\raw_meshes\\";
+            string[] files = Directory.GetFiles(THINGIROOT);
+
+            SafeListBuilder<string> failures = new SafeListBuilder<string>();
+
+            int k = 0;
+
+            gParallel.ForEach(files, (filename) => {
+                int i = k;
+                Interlocked.Increment(ref k);
+                System.Console.WriteLine("{0} : {1}", i, filename);
+
+                DMesh3Builder builder = new DMesh3Builder();
+                StandardMeshReader reader = new StandardMeshReader() { MeshBuilder = builder };
+                IOReadResult result = reader.Read(filename, ReadOptions.Defaults);
+                if (result.code != IOCode.Ok) {
+                    System.Console.WriteLine("{0} FAILED!", filename);
+                    failures.SafeAdd(filename);
+                }
+            });
+
+
+            foreach ( string failure in failures.Result ) {
+                System.Console.WriteLine("FAIL: {0}", failure);
+            }
+
+        }
+
+
+
     }
+
+
+
 }

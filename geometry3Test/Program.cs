@@ -29,12 +29,13 @@ namespace geometry3Test
 
             //test_VectorTypes.test_rcvector();
             //test_VectorTypes.test_bitarrays();
-            //test_MeshIO.test_simple_obj();
             //test_Math.test_VectorTanCot();
             //test_Math.test_AngleClamp();
             //test_Math.test_RayBoxIntersect();
-
             //test_MathTypes.all_tests();
+
+            //test_MeshIO.test_simple_obj();
+            test_MeshIO.test_read_thingi10k();
 
             //test_VectorTypes.test_pq();
             //test_VectorTypes.profile_pq();
