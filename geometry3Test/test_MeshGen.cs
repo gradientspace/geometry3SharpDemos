@@ -278,10 +278,5 @@ namespace geometry3Test
         }
 
 
-
-
-
-        }
-
     }
 }
