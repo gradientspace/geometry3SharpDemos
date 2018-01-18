@@ -80,6 +80,14 @@ namespace geometry3Test
 
 
 
+
+        public static void WriteTestOutputStrings(string[] lines, string sFilename)
+        {
+            File.WriteAllLines(Program.TEST_OUTPUT_PATH + sFilename, lines);
+        }
+
+
+
         public static void WriteDebugMesh(IMesh mesh, string sfilename, bool write_groups = true, bool write_vtxcolors = false, bool write_vtxuv = false)
         {
             OBJWriter writer = new OBJWriter();

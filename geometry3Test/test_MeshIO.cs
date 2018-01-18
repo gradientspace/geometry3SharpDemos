@@ -45,6 +45,7 @@ namespace geometry3Test
 
 
 
+
         public static void test_read_thingi10k()
         {
             //const string THINGIROOT = "D:\\meshes\\Thingi10K\\raw_meshes\\";
@@ -52,6 +53,11 @@ namespace geometry3Test
             string[] files = Directory.GetFiles(THINGIROOT);
 
             SafeListBuilder<string> failures = new SafeListBuilder<string>();
+
+            SafeListBuilder<string> empty = new SafeListBuilder<string>();
+            SafeListBuilder<string> closed = new SafeListBuilder<string>();
+            SafeListBuilder<string> open = new SafeListBuilder<string>();
+            SafeListBuilder<string> boundaries_failed = new SafeListBuilder<string>();
 
             int k = 0;
 
@@ -66,7 +72,42 @@ namespace geometry3Test
                 if (result.code != IOCode.Ok) {
                     System.Console.WriteLine("{0} FAILED!", filename);
                     failures.SafeAdd(filename);
+                    return;
                 }
+
+                bool is_open = false;
+                bool loops_failed = false;
+                bool is_empty = true;
+                foreach ( DMesh3 mesh in builder.Meshes ) {
+                    if (mesh.TriangleCount > 0)
+                        is_empty = false;
+
+                    if ( mesh.IsClosed() == false ) {
+                        is_open = true;
+                        try {
+                            MeshBoundaryLoops loops = new MeshBoundaryLoops(mesh, false) {
+                                SpanBehavior = MeshBoundaryLoops.SpanBehaviors.ThrowException,
+                                FailureBehavior = MeshBoundaryLoops.FailureBehaviors.ThrowException
+                            };
+                            loops.Compute();
+                        } catch {
+                            loops_failed = true;
+                        }
+                    }
+                }
+
+                if (is_empty) {
+                    empty.SafeAdd(filename);
+                } else if (is_open) {
+                    open.SafeAdd(filename);
+                    if (loops_failed)
+                        boundaries_failed.SafeAdd(filename);
+
+                } else {
+                    closed.SafeAdd(filename);
+                }
+
+
             });
 
 
@@ -74,6 +115,10 @@ namespace geometry3Test
                 System.Console.WriteLine("FAIL: {0}", failure);
             }
 
+            TestUtil.WriteTestOutputStrings(empty.List.ToArray(), "thingi10k_empty.txt");
+            TestUtil.WriteTestOutputStrings(closed.List.ToArray(), "thingi10k_closed.txt");
+            TestUtil.WriteTestOutputStrings(open.List.ToArray(), "thingi10k_open.txt");
+            TestUtil.WriteTestOutputStrings(boundaries_failed.List.ToArray(), "thingi10k_boundaries_failed.txt");
         }
 
 
