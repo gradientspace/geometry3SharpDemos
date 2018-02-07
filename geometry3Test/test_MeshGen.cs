@@ -65,6 +65,19 @@ namespace geometry3Test
             normcube_gen.Box = new Box3d(new Frame3f(Vector3f.One, Vector3f.One), Vector3d.One * 1.3);
             normcube_gen.Generate();
             WriteGeneratedMesh(normcube_gen, "meshgen_Sphere_NormalizedCube_noshared.obj");
+
+
+            TubeGenerator tube_gen = new TubeGenerator() {
+                Vertices = new List<Vector3d>() { Vector3d.Zero, Vector3d.AxisX, 2 * Vector3d.AxisX, 3 * Vector3d.AxisX },
+                Polygon = Polygon2d.MakeCircle(1, 16)
+            };
+            tube_gen.Generate();
+            WriteGeneratedMesh(tube_gen, "meshgen_TubeGenerator.obj");
+
+            tube_gen.Polygon.Translate(Vector2d.One);
+            tube_gen.CapCenter = Vector2d.One;
+            tube_gen.Generate();
+            WriteGeneratedMesh(tube_gen, "meshgen_TubeGenerator_shifted.obj");
         }
 
 
