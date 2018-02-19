@@ -35,43 +35,44 @@ namespace geometry3Test
             //test_MathTypes.all_tests();
 
             //test_MeshIO.test_simple_obj();
-            test_MeshIO.test_read_thingi10k();
+            //test_MeshIO.test_read_thingi10k();
 
-            //test_VectorTypes.test_pq();
-            //test_VectorTypes.profile_pq();
+			//test_VectorTypes.test_pq();
+			//test_VectorTypes.profile_pq();
 
-            //test_dmesh();
-            //test_DMesh3.merge_test_closed_mesh();
-            //test_DMesh3.copy_performance();
-            //test_DMesh3.performance_grinder();
+			//test_dmesh();
+			//test_DMesh3.merge_test_closed_mesh();
+			//test_DMesh3.copy_performance();
+			//test_DMesh3.performance_grinder();
 
-            //test_ntmesh();
+			//test_ntmesh();
 
-            //test_Remesher.WriteDebugMeshes = true;
-            //test_Remesher.test_basic_closed_remesh();
-            //test_Remesher.test_remesh_smoothing();
-            //test_Remesher.test_remesh_constraints_fixedverts();
-            //test_Remesher.test_remesh_constraints_vertcurves();
-            //test_Remesher.test_remesh_region();
+			//test_Remesher.WriteDebugMeshes = true;
+			//test_Remesher.test_basic_closed_remesh();
+			//test_Remesher.test_remesh_smoothing();
+			//test_Remesher.test_remesh_constraints_fixedverts();
+			//test_Remesher.test_remesh_constraints_vertcurves();
+			//test_Remesher.test_remesh_region();
 
-            //test_Reducer.test_basic_closed_reduce();
-            //test_Reducer.test_reduce_constraints_fixedverts();
-            //test_Reducer.test_reduce_profiling();
+			//test_Reducer.test_basic_closed_reduce();
+			//test_Reducer.test_reduce_constraints_fixedverts();
+			//test_Reducer.test_reduce_profiling();
 
-            //test_Spatial.test_AABBTree_basic();
-            //test_Spatial.test_AABBTree_TriDist();
-            //test_Spatial.test_AABBTree_profile();
-            //test_Spatial.test_AABBTree_RayHit();
-            //test_Spatial.test_AABBTree_TriTriDist();
-            //test_Spatial.test_AABBTree_TriTriIntr();
-            //test_Spatial.test_Winding();
+			//test_Spatial.test_AABBTree_basic();
+			//test_Spatial.test_AABBTree_TriDist();
+			//test_Spatial.test_AABBTree_profile();
+			//test_Spatial.test_AABBTree_RayHit();
+			//test_Spatial.test_AABBTree_TriTriDist();
+			//test_Spatial.test_AABBTree_TriTriIntr();
+			//test_Spatial.test_Winding();
 
-            //test_MeshGen.test_basic_generators();
-            //test_MeshGen.test_voxel_surface();
-            //test_MeshGen.test_mesh_builders();
-            //test_MeshGen.test_marching_cubes();
-            //test_MeshGen.test_marching_cubes_levelset();
-            //test_MeshGen.test_marching_cubes_topology();
+			//test_MeshGen.test_basic_generators();
+			//test_MeshGen.test_voxel_surface();
+			//test_MeshGen.test_mesh_builders();
+			//test_MeshGen.test_marching_cubes();
+			//test_MeshGen.test_marching_cubes_levelset();
+			//test_MeshGen.test_marching_cubes_topology();
+			test_MeshGen.test_marching_cubes_implicits();
 
             //test_Solvers.test_Matrices();
             //test_Solvers.test_SparseCG();

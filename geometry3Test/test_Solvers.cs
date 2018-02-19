@@ -172,14 +172,6 @@ namespace geometry3Test
 
         }
 
-            SparseSymmetricCG Solver = new SparseSymmetricCG() { B = B, MultiplyF = M.Multiply };
-            Solver.Solve();
-            string s = "";
-            for (int i = 0; i < N; ++i)
-                s += " " + Solver.X[i];
-            System.Console.WriteLine(s);
-        }
-
 
 
 
