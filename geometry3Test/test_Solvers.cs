@@ -172,13 +172,86 @@ namespace geometry3Test
 
         }
 
+
+
+
+
+
+
+
+
+
+
+        public static void test_SparseCG_Precond()
+        {
+            // A test case where Jacobi preconditioner (ie M = diag(A)) provides some improvement
+            // described in http://www.math.iit.edu/~fass/477577_Chapter_16.pdf
+
+            int N = 10000;
+            SymmetricSparseMatrix M = new SymmetricSparseMatrix();
+            double[] B = new double[N];
+            for (int i = 0; i < N; ++i) {
+                for (int j = i; j < N; ++j) {
+                    if (i == j)
+                        M.Set(i, i, 0.5 + Math.Sqrt(i));
+                    else if ( Math.Abs(i-j) == 1 )
+                        M.Set(i, j, 1);
+                    else if (Math.Abs(i - j) == 100)
+                        M.Set(i, j, 1);
+                }
+                B[i] = 1;
+            }
+
             SparseSymmetricCG Solver = new SparseSymmetricCG() { B = B, MultiplyF = M.Multiply };
             Solver.Solve();
-            string s = "";
-            for (int i = 0; i < N; ++i)
-                s += " " + Solver.X[i];
-            System.Console.WriteLine(s);
+            double[] BTest = new double[N];
+            M.Multiply(Solver.X, BTest);
+            double diff = BufferUtil.DistanceSquared(B, BTest);
+            if (diff > MathUtil.ZeroTolerance)
+                System.Console.WriteLine("test_SparseCG: initial solve failed!");
+
+            PackedSparseMatrix PackedM = new PackedSparseMatrix(M);
+            PackedM.Sort();
+            SparseSymmetricCG Solver_PackedM = new SparseSymmetricCG() { B = B, MultiplyF = PackedM.Multiply };
+            Solver_PackedM.Solve();
+            PackedM.Multiply(Solver_PackedM.X, BTest);
+            double diff_packed = BufferUtil.DistanceSquared(B, BTest);
+            if (diff_packed > MathUtil.ZeroTolerance)
+                System.Console.WriteLine("test_SparseCG: Packed solve failed!");
+
+#if false
+            SparseCholeskyDecomposition cholDecomp = new SparseCholeskyDecomposition(PackedM);
+            cholDecomp.ComputeIncomplete();
+
+            // factorization is filled with NaNs!! doing something wrong.
+
+            double[] TmpX = new double[N], Y = new double[N];
+            cholDecomp.Solve(BTest, TmpX, Y);
+
+            // note: can also try just lower-triangular matrix - this is (L+D), Gauss-Seidel preconditioner?
+            //   see http://www.math.iit.edu/~fass/477577_Chapter_16.pdf
+
+            Action<double[], double[]> cholPrecond = (R, Z) => {
+                cholDecomp.Solve(R, Z, Y);
+            };
+
+            SymmetricSparseMatrix diagPrecond = new SymmetricSparseMatrix(N);
+            for (int k = 0; k < N; ++k)
+                diagPrecond[k, k] = 1.0 / M[k, k];
+
+            SparseSymmetricCG Solver_Precond = new SparseSymmetricCG() { B = B, MultiplyF = PackedM.Multiply, PreconditionMultiplyF = diagPrecond.Multiply };
+            //SparseSymmetricCG Solver_Precond = new SparseSymmetricCG() { B = B, MultiplyF = PackedM.Multiply, PreconditionMultiplyF = cholPrecond };
+            Solver_Precond.SolvePreconditioned();
+            PackedM.Multiply(Solver_Precond.X, BTest);
+            double diff_precond = BufferUtil.DistanceSquared(B, BTest);
+            if (diff_precond > MathUtil.ZeroTolerance)
+                System.Console.WriteLine("test_SparseCG: cholesky-preconditioned solve failed!");
+
+            System.Console.WriteLine("Iterations regular {0}  precond {1}", Solver_PackedM.Iterations, Solver_Precond.Iterations);
+            System.Console.WriteLine("Tol regular {0}  precond {1}", diff_packed, diff_precond);
+#endif
         }
+
 
 
 

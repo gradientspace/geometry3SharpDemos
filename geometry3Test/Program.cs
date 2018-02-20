@@ -71,11 +71,12 @@ namespace geometry3Test
             //test_MeshGen.test_mesh_builders();
             //test_MeshGen.test_marching_cubes();
             //test_MeshGen.test_marching_cubes_levelset();
-            //test_MeshGen.test_marching_cubes_topology();
+            //test_MeshGen.test_marching_cubes_topology();   // this is a sanity-checker, very slow!
 
             //test_Solvers.test_Matrices();
             //test_Solvers.test_SparseCG();
             //test_Solvers.test_Laplacian_deformer();
+            //test_Solvers.test_SparseCG_Precond();
 
             //test_Deformers.test_LaplacianDeformation();
 
