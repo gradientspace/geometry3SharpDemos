@@ -291,5 +291,89 @@ namespace geometry3Test
         }
 
 
+
+
+
+		public static void test_marching_cubes_implicits()
+		{
+			DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+			MeshTransforms.Translate(mesh, -mesh.CachedBounds.Center);
+			double meshCellsize = mesh.CachedBounds.MaxDim / 32;
+			MeshSignedDistanceGrid levelSet = new MeshSignedDistanceGrid(mesh, meshCellsize);
+			levelSet.ExactBandWidth = 3;
+			levelSet.UseParallel = true;
+			levelSet.ComputeMode = MeshSignedDistanceGrid.ComputeModes.NarrowBandOnly;
+			levelSet.Compute();
+			var meshIso = new DenseGridTrilinearImplicit(levelSet.Grid, levelSet.GridOrigin, levelSet.CellSize);
+
+
+			ImplicitOffset3d offsetMeshIso = new ImplicitOffset3d() {
+				A = meshIso, Offset = 2.0
+			};
+
+			double r = 15.0;
+			ImplicitSphere3d sphere1 = new ImplicitSphere3d() {
+				Origin = Vector3d.Zero,
+				Radius = r
+			};
+			ImplicitSphere3d sphere2 = new ImplicitSphere3d() {
+				Origin = r*Vector3d.AxisX,
+				Radius = r
+			};
+			ImplicitAxisAlignedBox3d aabox1 = new ImplicitAxisAlignedBox3d() {
+				AABox = new AxisAlignedBox3d(r * 0.5 * Vector3d.One, r, r * 0.75, r * 0.5)
+			};
+			ImplicitBox3d box1 = new ImplicitBox3d() {
+				Box = new Box3d(new Frame3f(r * 0.5 * Vector3d.One, Vector3d.One.Normalized),
+								new Vector3d(r, r * 0.75, r * 0.5))
+			};
+			ImplicitLine3d line1 = new ImplicitLine3d() {
+				Segment = new Segment3d(Vector3d.Zero, r * Vector3d.One),
+				Radius = 3.0
+			};
+			ImplicitHalfSpace3d half1 = new ImplicitHalfSpace3d() {
+				Origin = Vector3d.Zero, Normal = Vector3d.One.Normalized
+			};
+
+			ImplicitUnion3d union = new ImplicitUnion3d() {
+				A = sphere1, B = line1
+			};
+			ImplicitDifference3d difference = new ImplicitDifference3d() {
+				A = meshIso, B = aabox1
+			};
+			ImplicitIntersection3d intersect = new ImplicitIntersection3d() {
+				A = meshIso, B = half1
+			};
+			ImplicitNaryUnion3d nunion = new ImplicitNaryUnion3d() {
+				Children = new List<BoundedImplicitFunction3d>() { offsetMeshIso, sphere1, sphere2 }
+			};
+			ImplicitNaryDifference3d ndifference = new ImplicitNaryDifference3d() {
+				A = offsetMeshIso,
+				BSet = new List<BoundedImplicitFunction3d>() { sphere1, sphere2 }
+			};
+			ImplicitBlend3d blend = new ImplicitBlend3d() {
+				A = sphere1, B = sphere2 
+			};
+
+			BoundedImplicitFunction3d root = intersect;
+
+			AxisAlignedBox3d bounds = root.Bounds();
+			int numcells = 64;
+			MarchingCubes c = new MarchingCubes();
+			c.RootMode = MarchingCubes.RootfindingModes.LerpSteps;
+			c.RootModeSteps = 5;
+			c.Implicit = root;
+			c.Bounds = bounds;
+			c.CubeSize = bounds.MaxDim / numcells;
+			c.Bounds.Expand(3 * c.CubeSize);
+
+			c.Generate();
+
+			MeshNormals.QuickCompute(c.Mesh);
+			TestUtil.WriteTestOutputMesh(c.Mesh, "marching_cubes_implicit.obj");
+		}
+
+
+
     }
 }

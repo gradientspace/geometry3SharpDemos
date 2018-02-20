@@ -176,12 +176,6 @@ namespace geometry3Test
 
 
 
-
-
-
-
-
-
         public static void test_SparseCG_Precond()
         {
             // A test case where Jacobi preconditioner (ie M = diag(A)) provides some improvement
@@ -251,8 +245,6 @@ namespace geometry3Test
             System.Console.WriteLine("Tol regular {0}  precond {1}", diff_packed, diff_precond);
 #endif
         }
-
-
 
 
 
