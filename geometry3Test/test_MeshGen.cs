@@ -375,5 +375,194 @@ namespace geometry3Test
 
 
 
+
+
+        public static void test_marching_cubes_demos()
+        {
+            // generateMeshF() meshes the input implicit function at
+            // the given cell resolution, and writes out the resulting mesh  
+            Action<BoundedImplicitFunction3d, int, string> generateMeshF = (root, numcells, path) => {
+                MarchingCubes c = new MarchingCubes();
+                c.Implicit = root;
+                c.RootMode = MarchingCubes.RootfindingModes.LerpSteps;      // cube-edge convergence method
+                c.RootModeSteps = 5;                                        // number of iterations
+                c.Bounds = root.Bounds();
+                c.CubeSize = c.Bounds.MaxDim / numcells;
+                c.Bounds.Expand(3 * c.CubeSize);                            // leave a buffer of cells
+                c.Generate();
+                MeshNormals.QuickCompute(c.Mesh);                           // generate normals
+                StandardMeshWriter.WriteMesh(path, c.Mesh, WriteOptions.Defaults);   // write mesh
+            };
+
+            // meshToImplicitF() generates a narrow-band distance-field and
+            // returns it as an implicit surface, that can be combined with other implicits           
+            Func<DMesh3, int, double, BoundedImplicitFunction3d> meshToImplicitF = (meshIn, numcells, max_offset) => {
+                double meshCellsize = meshIn.CachedBounds.MaxDim / numcells;
+                MeshSignedDistanceGrid levelSet = new MeshSignedDistanceGrid(meshIn, meshCellsize);
+                levelSet.ExactBandWidth = (int)(max_offset / meshCellsize) + 1;
+                levelSet.Compute();
+                return new DenseGridTrilinearImplicit(levelSet.Grid, levelSet.GridOrigin, levelSet.CellSize);
+            };
+
+            // meshToBlendImplicitF() computes the full distance-field grid for the input 
+            // mesh. The bounds are expanded quite a bit to allow for blending,
+            // probably more than necessary in most cases
+            Func<DMesh3, int, BoundedImplicitFunction3d> meshToBlendImplicitF = (meshIn, numcells) => {
+                double meshCellsize = meshIn.CachedBounds.MaxDim / numcells;
+                MeshSignedDistanceGrid levelSet = new MeshSignedDistanceGrid(meshIn, meshCellsize);
+                levelSet.ExpandBounds = meshIn.CachedBounds.Diagonal * 0.25;        // need some values outside mesh
+                levelSet.ComputeMode = MeshSignedDistanceGrid.ComputeModes.FullGrid;
+                levelSet.Compute();
+                return new DenseGridTrilinearImplicit(levelSet.Grid, levelSet.GridOrigin, levelSet.CellSize);
+            };
+
+
+
+            // generate union/difference/intersection of sphere and cube
+
+            ImplicitSphere3d sphere = new ImplicitSphere3d() {
+                Origin = Vector3d.Zero, Radius = 1.0
+            };
+            ImplicitBox3d box = new ImplicitBox3d() {
+                Box = new Box3d(new Frame3f(Vector3f.AxisX), 0.5 * Vector3d.One)
+            };
+            generateMeshF(new ImplicitUnion3d() { A = sphere, B = box }, 128, "c:\\demo\\union.obj");
+            generateMeshF(new ImplicitDifference3d() { A = sphere, B = box }, 128, "c:\\demo\\difference.obj");
+            generateMeshF(new ImplicitIntersection3d() { A = sphere, B = box }, 128, "c:\\demo\\intersection.obj");
+
+
+            // generate bunny offset surfaces
+
+            //double offset = 0.2f;
+            //DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            //MeshTransforms.Scale(mesh, 3.0 / mesh.CachedBounds.MaxDim);
+            //BoundedImplicitFunction3d meshImplicit = meshToImplicitF(mesh, 64, offset);
+
+            //generateMeshF(meshImplicit, 128, "c:\\demo\\mesh.obj");
+            //generateMeshF(new ImplicitOffset3d() { A = meshImplicit, Offset = offset }, 128, "c:\\demo\\mesh_outset.obj");
+            //generateMeshF(new ImplicitOffset3d() { A = meshImplicit, Offset = -offset }, 128, "c:\\demo\\mesh_inset.obj");
+
+
+            // compare offset of sharp and smooth union
+
+            //var smooth_union = new ImplicitSmoothDifference3d() { A = sphere, B = box };
+            //generateMeshF(smooth_union, 128, "c:\\demo\\smooth_union.obj");
+            //generateMeshF(new ImplicitOffset3d() { A = smooth_union, Offset = 0.2 }, 128, "c:\\demo\\smooth_union_offset.obj");
+
+            //var union = new ImplicitUnion3d() { A = sphere, B = box };
+            //generateMeshF(new ImplicitOffset3d() { A = union, Offset = offset }, 128, "c:\\demo\\union_offset.obj");
+
+
+            // blending
+
+            //ImplicitSphere3d sphere1 = new ImplicitSphere3d() {
+            //    Origin = Vector3d.Zero, Radius = 1.0
+            //};
+            //ImplicitSphere3d sphere2 = new ImplicitSphere3d() {
+            //    Origin = 1.5 * Vector3d.AxisX, Radius = 1.0
+            //};
+            //generateMeshF(new ImplicitBlend3d() { A = sphere1, B = sphere2, Blend = 1.0 }, 128, "c:\\demo\\blend_1.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = sphere1, B = sphere2, Blend = 4.0 }, 128, "c:\\demo\\blend_4.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = sphere1, B = sphere2, Blend = 16.0 }, 128, "c:\\demo\\blend_16.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = sphere1, B = sphere2, Blend = 64.0 }, 128, "c:\\demo\\blend_64.obj");
+            //sphere1.Radius = sphere2.Radius = 2.0f;
+            //sphere2.Origin = 1.5 * sphere1.Radius * Vector3d.AxisX;
+            //generateMeshF(new ImplicitBlend3d() { A = sphere1, B = sphere2, Blend = 1.0 }, 128, "c:\\demo\\blend_2x_1.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = sphere1, B = sphere2, Blend = 4.0 }, 128, "c:\\demo\\blend_2x_4.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = sphere1, B = sphere2, Blend = 16.0 }, 128, "c:\\demo\\blend_2x_16.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = sphere1, B = sphere2, Blend = 64.0 }, 128, "c:\\demo\\blend_2x_64.obj");
+
+
+            // mesh blending
+
+            //DMesh3 mesh1 = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            //MeshTransforms.Scale(mesh1, 3.0 / mesh1.CachedBounds.MaxDim);
+            //DMesh3 mesh2 = new DMesh3(mesh1);
+            //MeshTransforms.Rotate(mesh2, mesh2.CachedBounds.Center, Quaternionf.AxisAngleD(Vector3f.OneNormalized, 45.0f));
+
+            //var meshImplicit1 = meshToImplicitF(mesh1, 64, 0);
+            //var meshImplicit2 = meshToImplicitF(mesh2, 64, 0);
+            //generateMeshF(new ImplicitBlend3d() { A = meshImplicit1, B = meshImplicit2, Blend = 0.0 }, 256, "c:\\demo\\blend_mesh_union.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = meshImplicit1, B = meshImplicit2, Blend = 10.0 }, 256, "c:\\demo\\blend_mesh_bad.obj");
+
+            //var meshFullImplicit1 = meshToBlendImplicitF(mesh1, 64);
+            //var meshFullImplicit2 = meshToBlendImplicitF(mesh2, 64);
+            //generateMeshF(new ImplicitBlend3d() { A = meshFullImplicit1, B = meshFullImplicit2, Blend = 0.0 }, 256, "c:\\demo\\blend_mesh_union.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = meshFullImplicit1, B = meshFullImplicit2, Blend = 1.0 }, 256, "c:\\demo\\blend_mesh_1.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = meshFullImplicit1, B = meshFullImplicit2, Blend = 10.0 }, 256, "c:\\demo\\blend_mesh_10.obj");
+            //generateMeshF(new ImplicitBlend3d() { A = meshFullImplicit1, B = meshFullImplicit2, Blend = 50.0 }, 256, "c:\\demo\\blend_mesh_100.obj");
+
+
+            //DMesh3 mesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            //MeshTransforms.Scale(mesh, 3.0 / mesh.CachedBounds.MaxDim);
+            //MeshTransforms.Translate(mesh, -mesh.CachedBounds.Center);
+            //Reducer r = new Reducer(mesh);
+            //r.ReduceToTriangleCount(100);
+
+            //double radius = 0.1;
+            //List<BoundedImplicitFunction3d> Lines = new List<BoundedImplicitFunction3d>();
+            //foreach (Index4i edge_info in mesh.Edges()) {
+            //    var segment = new Segment3d(mesh.GetVertex(edge_info.a), mesh.GetVertex(edge_info.b));
+            //    Lines.Add(new ImplicitLine3d() { Segment = segment, Radius = radius });
+            //}
+            //ImplicitNaryUnion3d unionN = new ImplicitNaryUnion3d() { Children = Lines };
+            //generateMeshF(unionN, 128, "c:\\demo\\mesh_edges.obj");
+
+            //radius = 0.05;
+            //List<BoundedImplicitFunction3d> Elements = new List<BoundedImplicitFunction3d>();
+            //foreach (int eid in mesh.EdgeIndices()) {
+            //    var segment = new Segment3d(mesh.GetEdgePoint(eid, 0), mesh.GetEdgePoint(eid, 1));
+            //    Elements.Add(new ImplicitLine3d() { Segment = segment, Radius = radius });
+            //}
+            //foreach (Vector3d v in mesh.Vertices())
+            //    Elements.Add(new ImplicitSphere3d() { Origin = v, Radius = 2 * radius });
+            //generateMeshF(new ImplicitNaryUnion3d() { Children = Elements }, 256, "c:\\demo\\mesh_edges_and_vertices.obj");
+
+
+            //double lattice_radius = 0.05;
+            //double lattice_spacing = 0.4;
+            //double shell_thickness = 0.05;
+            //int mesh_resolution = 64;   // set to 256 for image quality
+
+            //var shellMeshImplicit = meshToImplicitF(mesh, 128, shell_thickness);
+            //double max_dim = mesh.CachedBounds.MaxDim;
+            //AxisAlignedBox3d bounds = new AxisAlignedBox3d(mesh.CachedBounds.Center, max_dim / 2);
+            //bounds.Expand(2 * lattice_spacing);
+            //AxisAlignedBox2d element = new AxisAlignedBox2d(lattice_spacing);
+            //AxisAlignedBox2d bounds_xy = new AxisAlignedBox2d(bounds.Min.xy, bounds.Max.xy);
+            //AxisAlignedBox2d bounds_xz = new AxisAlignedBox2d(bounds.Min.xz, bounds.Max.xz);
+            //AxisAlignedBox2d bounds_yz = new AxisAlignedBox2d(bounds.Min.yz, bounds.Max.yz);
+
+            //List<BoundedImplicitFunction3d> Tiling = new List<BoundedImplicitFunction3d>();
+            //foreach (Vector2d uv in TilingUtil.BoundedRegularTiling2(element, bounds_xy, 0)) {
+            //    Segment3d seg = new Segment3d(new Vector3d(uv.x, uv.y, bounds.Min.z), new Vector3d(uv.x, uv.y, bounds.Max.z));
+            //    Tiling.Add(new ImplicitLine3d() { Segment = seg, Radius = lattice_radius });
+            //}
+            //foreach (Vector2d uv in TilingUtil.BoundedRegularTiling2(element, bounds_xz, 0)) {
+            //    Segment3d seg = new Segment3d(new Vector3d(uv.x, bounds.Min.y, uv.y), new Vector3d(uv.x, bounds.Max.y, uv.y));
+            //    Tiling.Add(new ImplicitLine3d() { Segment = seg, Radius = lattice_radius });
+            //}
+            //foreach (Vector2d uv in TilingUtil.BoundedRegularTiling2(element, bounds_yz, 0)) {
+            //    Segment3d seg = new Segment3d(new Vector3d(bounds.Min.x, uv.x, uv.y), new Vector3d(bounds.Max.x, uv.x, uv.y));
+            //    Tiling.Add(new ImplicitLine3d() { Segment = seg, Radius = lattice_radius });
+            //}
+            //ImplicitNaryUnion3d lattice = new ImplicitNaryUnion3d() { Children = Tiling };
+            //generateMeshF(lattice, 128, "c:\\demo\\lattice.obj");
+
+            //ImplicitIntersection3d lattice_clipped = new ImplicitIntersection3d() { A = lattice, B = shellMeshImplicit };
+            //generateMeshF(lattice_clipped, mesh_resolution, "c:\\demo\\lattice_clipped.obj");
+
+            //var shell = new ImplicitDifference3d() {
+            //    A = shellMeshImplicit, B = new ImplicitOffset3d() { A = shellMeshImplicit, Offset = -shell_thickness }
+            //};
+            //var shell_cut = new ImplicitDifference3d() {
+            //    A = shell, B = new ImplicitAxisAlignedBox3d() { AABox = new AxisAlignedBox3d(Vector3d.Zero, max_dim / 2, 0.4, max_dim / 2) }
+            //};
+            //generateMeshF(new ImplicitUnion3d() { A = lattice_clipped, B = shell_cut }, mesh_resolution, "c:\\demo\\lattice_result.obj");
+
+        }
+
+
+
     }
 }

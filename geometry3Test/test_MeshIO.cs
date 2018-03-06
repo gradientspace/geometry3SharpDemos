@@ -123,6 +123,67 @@ namespace geometry3Test
 
 
 
+
+
+        // make sure format writers all minimally function, and properly close file when completed
+        public static void test_write_formats()
+        {
+            string out_path = Program.TEST_OUTPUT_PATH + "format_test";
+
+            DMesh3 mesh = StandardMeshReader.ReadMesh(Program.TEST_FILES_PATH + "bunny_solid.obj");
+            StandardMeshWriter writer = new StandardMeshWriter();
+            var list = new List<WriteMesh>() { new WriteMesh(mesh) };
+
+            if (writer.Write(out_path + ".obj", list, WriteOptions.Defaults).code != IOCode.Ok)
+                System.Console.WriteLine("test_write_formats: obj failed");
+            if (writer.Write(out_path + ".stl", list, WriteOptions.Defaults).code != IOCode.Ok)
+                System.Console.WriteLine("test_write_formats: stl failed");
+            if (writer.Write(out_path + ".off", list, WriteOptions.Defaults).code != IOCode.Ok)
+                System.Console.WriteLine("test_write_formats: off failed");
+            if (writer.Write(out_path + ".g3mesh", list, WriteOptions.Defaults).code != IOCode.Ok)
+                System.Console.WriteLine("test_write_formats: g3mesh failed");
+
+            if (writer.Write(out_path + ".obj", list, WriteOptions.Defaults).code != IOCode.Ok)
+                System.Console.WriteLine("test_write_formats: obj failed on second pass");
+            if (writer.Write(out_path + ".stl", list, WriteOptions.Defaults).code != IOCode.Ok)
+                System.Console.WriteLine("test_write_formats: stl failed on second pass");
+            if (writer.Write(out_path + ".off", list, WriteOptions.Defaults).code != IOCode.Ok)
+                System.Console.WriteLine("test_write_formats: off failed on second pass");
+            if (writer.Write(out_path + ".g3mesh", list, WriteOptions.Defaults).code != IOCode.Ok)
+                System.Console.WriteLine("test_write_formats: g3mesh failed on second pass");
+
+            MemoryStream fileStream = new MemoryStream();
+            MemoryStream mtlStream = new MemoryStream();
+            writer.OpenStreamF = (filename) => {
+                return filename.EndsWith(".mtl") ? mtlStream : fileStream;
+            };
+            writer.CloseStreamF = (stream) => { };
+
+            WriteOptions opt = WriteOptions.Defaults; opt.bWriteMaterials = true; opt.MaterialFilePath = out_path + ".mtl";
+            if (writer.Write(out_path + ".obj", list, opt).code != IOCode.Ok)
+                System.Console.WriteLine("test_write_formats: write to memory stream failed");
+
+            //string s = Encoding.ASCII.GetString(fileStream.ToArray());
+            if (fileStream.Length == 0 )
+                System.Console.WriteLine("test_write_formats: write to memory stream produced zero-length stream");
+        }
+
+
+        public static void test_points()
+        {
+            string filename = "c:\\scratch\\bunny_solid.obj";
+            DMesh3 mesh = StandardMeshReader.ReadMesh(filename);
+
+            PointSplatsGenerator pointgen = new PointSplatsGenerator() {
+                PointIndices = IntSequence.Range(mesh.VertexCount),
+                PointF = mesh.GetVertex,
+                NormalF = (vid) => { return (Vector3d)mesh.GetVertexNormal(vid); },
+                Radius = mesh.CachedBounds.DiagonalLength * 0.01
+            };
+            DMesh3 pointMesh = pointgen.Generate().MakeDMesh();
+            StandardMeshWriter.WriteMesh("c:\\scratch\\POINTS.obj", pointMesh, WriteOptions.Defaults);
+        }
+
     }
 
 

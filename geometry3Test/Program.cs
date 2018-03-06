@@ -35,6 +35,7 @@ namespace geometry3Test
             //test_MathTypes.all_tests();
 
             //test_MeshIO.test_simple_obj();
+            //test_MeshIO.test_write_formats();
             //test_MeshIO.test_read_thingi10k();
 
 			//test_VectorTypes.test_pq();
@@ -66,13 +67,14 @@ namespace geometry3Test
 			//test_Spatial.test_AABBTree_TriTriIntr();
 			//test_Spatial.test_Winding();
 
-			//test_MeshGen.test_basic_generators();
-			//test_MeshGen.test_voxel_surface();
-			//test_MeshGen.test_mesh_builders();
-			//test_MeshGen.test_marching_cubes();
-			//test_MeshGen.test_marching_cubes_levelset();
-			//test_MeshGen.test_marching_cubes_topology();
-			test_MeshGen.test_marching_cubes_implicits();
+			test_MeshGen.test_basic_generators();
+            //test_MeshGen.test_voxel_surface();
+            //test_MeshGen.test_mesh_builders();
+            //test_MeshGen.test_marching_cubes();
+            //test_MeshGen.test_marching_cubes_levelset();
+            //test_MeshGen.test_marching_cubes_topology();
+            //test_MeshGen.test_marching_cubes_implicits();
+            //test_MeshGen.test_marching_cubes_demos();
 
             //test_Solvers.test_Matrices();
             //test_Solvers.test_SparseCG();
