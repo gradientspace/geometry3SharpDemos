@@ -283,7 +283,13 @@ namespace geometry3Test
 
 
 
-
+        public static int[] RandomIndices(int Count, Random r, int max_index)
+        {
+            int[] v = new int[Count];
+            for (int k = 0; k < Count; ++k)
+                v[k] = r.Next() % max_index;
+            return v;
+        }
 
         public static Vector2d[] RandomPoints2(int Count, Random r, Vector2d center, double scale = 1.0)
         {

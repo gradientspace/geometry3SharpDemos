@@ -478,6 +478,142 @@ namespace geometry3Test
 
 
 
+
+        public static void test_insert()
+        {
+            DMesh3 testMesh = new DMesh3();
+
+            if (testMesh.InsertVertex(10, new NewVertexInfo(Vector3d.Zero)) != MeshResult.Ok)
+                Console.WriteLine("FAILED testMesh.InsertVertex(10)");
+            if (testMesh.InsertVertex(11, new NewVertexInfo(Vector3d.Zero)) != MeshResult.Ok)
+                Console.WriteLine("FAILED testMesh.InsertVertex(11)");
+            if (testMesh.InsertVertex(5000, new NewVertexInfo(Vector3d.Zero)) != MeshResult.Ok)
+                Console.WriteLine("FAILED testMesh.InsertVertex(5000)");
+            if (testMesh.InsertVertex(1000, new NewVertexInfo(Vector3d.Zero)) != MeshResult.Ok)
+                Console.WriteLine("FAILED testMesh.InsertVertex(1000)");
+
+            if (testMesh.InsertTriangle(7, new Index3i(10, 11, 5000)) != MeshResult.Ok)
+                Console.WriteLine("FAILED testMesh.InsertTriangle(7)");
+            if (testMesh.InsertTriangle(2, new Index3i(11, 10, 1000)) != MeshResult.Ok)
+                Console.WriteLine("FAILED testMesh.InsertTriangle(2)");
+
+            foreach ( int vid in testMesh.VertexIndices() ) {
+                List<int> edges = new List<int>(testMesh.VertexEdges.ValueItr(vid));
+            }
+
+            testMesh.CheckValidity(false, FailMode.DebugAssert);
+        }
+
+
+        public static void test_remove_change_apply()
+        {
+            DMesh3 testMesh = TestUtil.LoadTestInputMesh("bunny_solid.obj");
+            DMesh3 copy = new DMesh3(testMesh);
+            Vector3d c = testMesh.CachedBounds.Center;
+
+            MeshFaceSelection selection = new MeshFaceSelection(testMesh);
+            foreach (int tid in testMesh.TriangleIndices()) {
+                if (testMesh.GetTriCentroid(tid).x > c.x)
+                    selection.Select(tid);
+            }
+
+            RemoveTrianglesMeshChange change = new RemoveTrianglesMeshChange();
+            change.InitializeFromApply(testMesh, selection);
+
+            testMesh.CheckValidity(true);
+            change.Apply(copy);
+            copy.CheckValidity(true);
+
+            if (!copy.IsSameMesh(testMesh, true))
+                System.Console.WriteLine("FAILED copy.IsSameMesh() 1");
+
+            change.Revert(testMesh);
+            testMesh.CheckValidity(false);
+            change.Revert(copy);
+            copy.CheckValidity(false);
+
+            if (!copy.IsSameMesh(testMesh, true))
+                System.Console.WriteLine("FAILED copy.IsSameMesh() 1");
+
+            System.Console.WriteLine("test_remove_change_apply ok");
+        }
+
+
+
+        public static void test_remove_change_construct()
+        {
+            DMesh3 testMesh = TestUtil.LoadTestInputMesh("bunny_open_base.obj");
+
+            Random r = new Random(31337);
+            //int N = 100;
+            int N = 10;
+            int[] indices = TestUtil.RandomIndices(N, r, testMesh.MaxVertexID);
+            for (int ii = 0; ii < N; ++ii) {
+                MeshFaceSelection selection = new MeshFaceSelection(testMesh);
+                selection.SelectVertexOneRing(indices[ii]);
+                selection.ExpandToOneRingNeighbours(8);
+
+                RemoveTrianglesMeshChange change = new RemoveTrianglesMeshChange();
+                change.InitializeFromExisting(testMesh, selection);
+
+                DMesh3 removed = new DMesh3(testMesh);
+                MeshEditor.RemoveTriangles(removed, selection);
+
+                DMesh3 changeCopy = new DMesh3(testMesh);
+                change.Apply(changeCopy);
+                changeCopy.CheckValidity(true);
+
+                if (!changeCopy.IsSameMesh(removed, true))
+                    System.Console.WriteLine("FAILED copy.IsSameMesh() 1");
+
+                change.Revert(changeCopy);
+                changeCopy.CheckValidity(false);
+
+                if (!changeCopy.IsSameMesh(testMesh, true))
+                    System.Console.WriteLine("FAILED copy.IsSameMesh() 1");
+            }
+
+            System.Console.WriteLine("test_remove_change_construct ok");
+        }
+
+
+
+
+        public static void test_add_change()
+        {
+            DMesh3 testMesh = TestUtil.LoadTestInputMesh("bunny_open_base.obj");
+            DMesh3 copy = new DMesh3(testMesh);
+
+            MeshBoundaryLoops loops = new MeshBoundaryLoops(copy);
+            foreach ( var loop in loops ) {
+                SimpleHoleFiller filler = new SimpleHoleFiller(copy, loop);
+                bool ok = filler.Fill();
+                Util.gDevAssert(ok);
+
+                AddTrianglesMeshChange change = new AddTrianglesMeshChange();
+                change.InitializeFromExisting(copy,
+                    new List<int>() { filler.NewVertex }, filler.NewTriangles);
+
+                DMesh3 tmp = new DMesh3(copy);
+                change.Revert(copy);
+                copy.CheckValidity(true);
+
+                if (!copy.IsSameMesh(testMesh, true))
+                    System.Console.WriteLine("FAILED copy.IsSameMesh() 1");
+
+                change.Apply(copy);
+                copy.CheckValidity(true);
+                if (!copy.IsSameMesh(tmp, true))
+                    System.Console.WriteLine("FAILED copy.IsSameMesh() 1");
+            }
+
+            System.Console.WriteLine("test_add_change ok");
+        }
+
+
+
+
+
         public static void performance_grinder()
         {
             LocalProfiler p = new LocalProfiler();

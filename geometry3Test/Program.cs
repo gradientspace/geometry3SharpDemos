@@ -126,8 +126,13 @@ namespace geometry3Test
             test_DMesh3.test_normals();
             test_DMesh3.test_remove();
 
+            test_DMesh3.test_insert();
+            test_DMesh3.test_remove_change_apply();
+            test_DMesh3.test_remove_change_construct();
+            test_DMesh3.test_add_change();
 
-			int split_rounds = 100;
+
+            int split_rounds = 100;
 			test_DMesh3.split_tests(true, split_rounds);
 			test_DMesh3.split_tests(false, split_rounds);
 
