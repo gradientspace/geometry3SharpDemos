@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using g3;
 
 namespace geometry3Test
@@ -11,26 +11,26 @@ namespace geometry3Test
     {
         public static void WriteGeneratedMesh(MeshGenerator gen, string sFilename)
         {
+            gen.Generate();
             DMesh3 mesh = gen.MakeDMesh();
-            TestUtil.WriteTestOutputMesh(mesh, sFilename);
+            TestUtil.WriteTestOutputMesh(mesh, sFilename, true, true, true);
+            string tex_header = "mtllib checker.mtl\r\nusemtl checker\r\n";
+            string cur = File.ReadAllText(Program.TEST_OUTPUT_PATH+sFilename);
+            File.WriteAllText(Program.TEST_OUTPUT_PATH+sFilename, tex_header + cur);
         }
 
         public static void test_basic_generators()
         {
             TrivialDiscGenerator disc_gen = new TrivialDiscGenerator();
-            disc_gen.Generate();
             WriteGeneratedMesh(disc_gen, "meshgen_Disc.obj");
 
             TrivialRectGenerator rect_gen = new TrivialRectGenerator();
-            rect_gen.Generate();
             WriteGeneratedMesh(rect_gen, "meshgen_Rect.obj");
 
             GriddedRectGenerator gridrect_gen = new GriddedRectGenerator();
-            gridrect_gen.Generate();
             WriteGeneratedMesh(gridrect_gen, "meshgen_GriddedRect.obj");
 
             PuncturedDiscGenerator punc_disc_gen = new PuncturedDiscGenerator();
-            punc_disc_gen.Generate();
             WriteGeneratedMesh(punc_disc_gen, "meshgen_PuncturedDisc.obj");
 
             TrivialBox3Generator box_gen = new TrivialBox3Generator();
@@ -38,32 +38,25 @@ namespace geometry3Test
             f.Rotate(Quaternionf.AxisAngleD(Vector3f.AxisY, 45.0f));
             f.Rotate(Quaternionf.AxisAngleD(Vector3f.AxisZ, 45.0f));
             box_gen.Box = new Box3d(f.Origin, f.X, f.Y, f.Z, new Vector3d(3, 2, 1));
-            box_gen.Generate();
             WriteGeneratedMesh(box_gen, "meshgen_TrivialBox_shared.obj");
             box_gen.NoSharedVertices = true;
-            box_gen.Generate();
             WriteGeneratedMesh(box_gen, "meshgen_TrivialBox_noshared.obj");
 
 
             RoundRectGenerator roundrect_gen = new RoundRectGenerator();
             roundrect_gen.Width = 2;
-            roundrect_gen.Generate();
             WriteGeneratedMesh(roundrect_gen, "meshgen_RoundRect.obj");
 
 
             GridBox3Generator gridbox_gen = new GridBox3Generator();
-            gridbox_gen.Generate();
             WriteGeneratedMesh(gridbox_gen, "meshgen_GridBox_shared.obj");
             gridbox_gen.NoSharedVertices = true;
-            gridbox_gen.Generate();
             WriteGeneratedMesh(gridbox_gen, "meshgen_GridBox_noshared.obj");
 
             Sphere3Generator_NormalizedCube normcube_gen = new Sphere3Generator_NormalizedCube();
-            normcube_gen.Generate();
             WriteGeneratedMesh(normcube_gen, "meshgen_Sphere_NormalizedCube_shared.obj");
             normcube_gen.NoSharedVertices = true;
             normcube_gen.Box = new Box3d(new Frame3f(Vector3f.One, Vector3f.One), Vector3d.One * 1.3);
-            normcube_gen.Generate();
             WriteGeneratedMesh(normcube_gen, "meshgen_Sphere_NormalizedCube_noshared.obj");
 
 
@@ -71,14 +64,51 @@ namespace geometry3Test
                 Vertices = new List<Vector3d>() { Vector3d.Zero, Vector3d.AxisX, 2 * Vector3d.AxisX, 3 * Vector3d.AxisX },
                 Polygon = Polygon2d.MakeCircle(1, 16)
             };
-            tube_gen.Generate();
             WriteGeneratedMesh(tube_gen, "meshgen_TubeGenerator.obj");
 
             tube_gen.Polygon.Translate(Vector2d.One);
             tube_gen.CapCenter = Vector2d.One;
-            tube_gen.Generate();
             WriteGeneratedMesh(tube_gen, "meshgen_TubeGenerator_shifted.obj");
         }
+
+
+
+
+
+        public static void test_tube_generator()
+        {
+            Polygon2d circle_path = Polygon2d.MakeCircle(50, 64);
+            PolyLine2d arc_path = new PolyLine2d(circle_path.Vertices.Take(circle_path.VertexCount/2));
+            Polygon2d irreg_path = new Polygon2d();
+            for ( int k = 0; k < circle_path.VertexCount; ++k ) {
+                irreg_path.AppendVertex(circle_path[k]);
+                k += k / 2;
+            }
+            PolyLine2d irreg_arc_path = new PolyLine2d(irreg_path.Vertices.Take(circle_path.VertexCount-1));
+
+            Polygon2d square_profile = Polygon2d.MakeCircle(7, 32);
+            square_profile.Translate(4*Vector2d.One);
+            //square_profile[0] = 20 * square_profile[0].Normalized;
+
+            bool no_shared = true;
+
+            WriteGeneratedMesh(
+                new TubeGenerator(circle_path, Frame3f.Identity, square_profile) { WantUVs = true, NoSharedVertices = no_shared },
+                "tubegen_loop_standarduv.obj");
+
+            WriteGeneratedMesh(
+                new TubeGenerator(irreg_path, Frame3f.Identity, square_profile) { WantUVs = true, NoSharedVertices = no_shared },
+                "tubegen_irregloop_standarduv.obj");
+
+            WriteGeneratedMesh(
+                new TubeGenerator(arc_path, Frame3f.Identity, square_profile) { WantUVs = true, NoSharedVertices = no_shared },
+                "tubegen_arc_standarduv.obj");
+
+            WriteGeneratedMesh(
+                new TubeGenerator(irreg_arc_path, Frame3f.Identity, square_profile) { WantUVs = true, NoSharedVertices = no_shared },
+                "tubegen_irregarc_standarduv.obj");
+        }
+
 
 
 

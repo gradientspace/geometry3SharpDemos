@@ -68,6 +68,7 @@ namespace geometry3Test
 			//test_Spatial.test_Winding();
 
 			test_MeshGen.test_basic_generators();
+            //test_MeshGen.test_tube_generator();
             //test_MeshGen.test_voxel_surface();
             //test_MeshGen.test_mesh_builders();
             //test_MeshGen.test_marching_cubes();
