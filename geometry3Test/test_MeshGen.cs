@@ -107,6 +107,19 @@ namespace geometry3Test
             WriteGeneratedMesh(
                 new TubeGenerator(irreg_arc_path, Frame3f.Identity, square_profile) { WantUVs = true, NoSharedVertices = no_shared },
                 "tubegen_irregarc_standarduv.obj");
+
+
+
+            // append tube border around each hole of input mesh
+            DMesh3 inMesh = TestUtil.LoadTestInputMesh("n_holed_bunny.obj");
+            Polygon2d bdrycirc = Polygon2d.MakeCircle(0.25, 6);
+            MeshBoundaryLoops loops = new MeshBoundaryLoops(inMesh);
+            foreach ( EdgeLoop loop in loops ) {
+                DCurve3 curve = loop.ToCurve().ResampleSharpTurns();
+                TubeGenerator gen = new TubeGenerator(curve, bdrycirc) { NoSharedVertices = false };
+                MeshEditor.Append(inMesh, gen.Generate().MakeDMesh());
+            }
+            TestUtil.WriteTestOutputMesh(inMesh, "boundary_tubes.obj");
         }
 
 
